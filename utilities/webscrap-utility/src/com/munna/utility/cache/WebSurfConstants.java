@@ -1,0 +1,54 @@
+package com.munna.utility.cache;
+
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * @author Mohammed Fathauddin
+ * @since 2018
+ */
+public class WebSurfConstants {
+
+	public static final String USER_DIRECTORY = System.getProperty("user.dir").concat(java.io.File.separator);
+
+	public static final String CONF_FOLDER = USER_DIRECTORY.concat("conf").concat(java.io.File.separator);
+
+	public static final String OUTPUT_FOLDER = USER_DIRECTORY.concat("output").concat(java.io.File.separator);
+
+	public static final String CONFIGURATION_FILE = CONF_FOLDER.concat("config.properties");
+
+	public static final class SoupUrls {
+
+		public static final String SITE_ONE_LIST_URL_FORMAT = "https://engineering.careers360.com/colleges/list-of-engineering-colleges-in-india?page=";
+
+	}
+
+	public static final class ConfigurationProperty {
+
+		public static final String NUMBER_OF_RECORDS_PER_CSV = "NUMBER_OF_RECORDS_PER_CSV";
+
+	}
+
+	public static final class C360Constants {
+		
+		public static final String BASE_URL = "https://engineering.careers360.com";
+
+		public static final List<String> COLUMN_NAMES = Arrays.asList(new String[] { "College Name", "Home Url",
+				"Review Url", "All", "Current Student", "Alumni", "Other", "Excellent", "Very Good", "Good", "Average",
+				"Poor", "College Infrastructure", "Campus placement", "Industry Exposure", "Faculty", "College Life",
+				"Hostel", "Student Crowd", "Affordability", "Postive Recommendations", "Negative Recommendations" });
+
+		public static final int TOTAL_PAGES_TO_CROWL = 210;
+
+		
+	}
+
+	public final static class CollegeDuniyaConstants{
+		
+		public static final String BASE_URL = "https://collegedunia.com/india-colleges?ajax=1&college_type=0&page=";
+		
+		public static final int TOTAL_PAGES_TO_CROWL = 1487;
+		
+	}
+
+}

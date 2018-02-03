@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+	<Appenders>
+		
+		<Console name="utility-console-log" target="SYSTEM_OUT">
+			<PatternLayout
+				pattern="[%-5level] %d{yyyy-MM-dd-HH-mm-ss-SSS} [%t] %c %L- %msg%n" />
+		</Console>
+
+		<RollingFile name="utility-log" fileName="logs/utility.log"
+			filePattern="logs/utility-%d{yyyy-MM-dd}-%i.log">
+			<PatternLayout
+				pattern="[%-5level] %d{yyyy-MM-dd-HH-mm-ss-SSS} [%t] %c %L- %msg%n" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="5MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="10" />
+		</RollingFile>
+
+		<RollingFile name="utility-error-log"
+			fileName="logs/utility-error.log"
+			filePattern="logs/utility-error-%d{yyyy-MM-dd}-%i.log">
+			<PatternLayout
+				pattern="[%-5level] %d{yyyy-MM-dd-HH-mm-ss-SSS} [%t] %c %L- %msg%n" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="5MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="10" />
+		</RollingFile>
+	</Appenders>
+	<Loggers>
+		<Root level="INFO" additivity="false">
+			<appender-ref ref="utility-log" />
+			<appender-ref ref="utility-error-log" level="ERROR" />
+			<appender-ref ref="utility-console-log" />
+		</Root>
+	</Loggers>
+</Configuration>
