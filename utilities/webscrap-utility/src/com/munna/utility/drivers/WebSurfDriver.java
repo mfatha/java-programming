@@ -12,6 +12,7 @@ import com.munna.utility.handler.WebScrapC360ReviewHandler;
 import com.munna.utility.handler.WebScrapCDListHandler;
 import com.munna.utility.handler.WebScrapCDReviewHandler;
 import com.munna.utility.handler.WebScrapHandler;
+import com.munna.utility.handler.WebScrapSSListHandler;
 
 /**
  * @author Mohammed Fathauddin
@@ -30,6 +31,7 @@ public class WebSurfDriver {
 			System.out.println("2) Car33r36O.c0m ->Getting Colleges Reviews");
 			System.out.println("3) C0llegeDuniya.c0m ->Getting Colleges_list");
 			System.out.println("4) C0llegeDuniya.c0m ->Getting Colleges Reviews");
+			System.out.println("5) Shiksha.c0m ->Getting Colleges_list");
 			System.out.println("Enter your option:");
 			String proceed = sc.nextLine();
 			WebScrapHandler webScrap = null;
@@ -41,6 +43,8 @@ public class WebSurfDriver {
 				webScrap = new WebScrapCDListHandler();
 			} else if (proceed != null && "4".equalsIgnoreCase(proceed.trim())) {
 				webScrap = new WebScrapCDReviewHandler();
+			} else if (proceed != null && "5".equalsIgnoreCase(proceed.trim())) {
+				webScrap = new WebScrapSSListHandler();
 			} else {
 				log.error("Unknown option selection, Exiting Utility");
 			}

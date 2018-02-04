@@ -56,5 +56,12 @@ public class WebSurfConstants {
 		public static final int TOTAL_PAGES_TO_CROWL = 1487;
 		
 	}
+	
+	public final static class ShikshaConstants{
+		
+		public static final String BASE_URL = "https://www.shiksha.com/btech/resources/college-reviews/";
+		
+		public static final int TOTAL_PAGES_TO_CROWL = 814;
+	}
 
 }

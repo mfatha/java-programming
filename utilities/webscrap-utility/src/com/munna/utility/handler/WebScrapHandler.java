@@ -62,6 +62,11 @@ public abstract class WebScrapHandler {
 			outputFolder = WebSurfConstants.OUTPUT_FOLDER.concat("CollegesList_collegeDuniya");
 			csvparser.createDirectory(outputFolder);
 			fileName = outputFolder.concat(java.io.File.separator) + "review_File" + recordCount + ".csv";
+		} else if (typeCode == 3) {
+			// CSV CODE TO WRITE COLLEGE LIST FOR Shiksha.c0m
+			outputFolder = WebSurfConstants.OUTPUT_FOLDER.concat("CollegesList_shiksha");
+			csvparser.createDirectory(outputFolder);
+			fileName = outputFolder.concat(java.io.File.separator) + "review_File" + recordCount + ".csv";
 		}
 		try {
 			FileWriter fileWriter = new FileWriter(fileName, true);
@@ -69,6 +74,8 @@ public abstract class WebScrapHandler {
 			if (typeCode == 1) {
 				fileWriter.append("URL");
 			} else if (typeCode == 2) {
+				fileWriter.append("URL");
+			} else if (typeCode == 3) {
 				fileWriter.append("URL");
 			}
 			fileWriter.append("\n");
