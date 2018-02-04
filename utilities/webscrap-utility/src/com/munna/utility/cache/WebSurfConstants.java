@@ -9,6 +9,8 @@ import java.util.List;
  */
 public class WebSurfConstants {
 
+	public static final int RETRY_COUNT = 5;
+	
 	public static final String USER_DIRECTORY = System.getProperty("user.dir").concat(java.io.File.separator);
 
 	public static final String CONF_FOLDER = USER_DIRECTORY.concat("conf").concat(java.io.File.separator);
@@ -46,6 +48,10 @@ public class WebSurfConstants {
 	public final static class CollegeDuniyaConstants{
 		
 		public static final String BASE_URL = "https://collegedunia.com/india-colleges?ajax=1&college_type=0&page=";
+		
+		public static final List<String> COLUMN_NAMES = Arrays.asList(new String[] { "college_name", "home_url",
+				"review_url", "total_reviewers","over_all_rating", "infrastructure", "academic", "placements", "faculty", "accommodation",
+				"social" });
 		
 		public static final int TOTAL_PAGES_TO_CROWL = 1487;
 		

@@ -121,7 +121,6 @@ public class generateC360ReviewReport extends UtilityService {
 			JsoupServices.getInstance().closeConnection(reviewLink);
 			JsoupServices.getInstance().closeConnection(scrapUrl);
 		}
-
 	}
 
 }
