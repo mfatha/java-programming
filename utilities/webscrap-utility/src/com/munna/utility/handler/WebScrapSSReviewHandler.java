@@ -15,27 +15,22 @@ import com.munna.utility.cache.WebSurfConstants;
 import com.munna.utility.impl.CSVParserServices;
 import com.munna.utility.impl.JsoupServices;
 
-/**
- * @author Mohammed Fathauddin
- * @since 2018
- */
-public class WebScrapCDReviewHandler extends WebScrapHandler {
+public class WebScrapSSReviewHandler extends WebScrapHandler {
 
 	private Log log = LogFactory.getLog(this.getClass());
 
 	private long batchNumber = 1L;
-
+	
 	@Override
 	public void startProcess() {
 		log.info("Reading CSV files from College_list Folder..");
-		fetchCSVFilesFromFolder(new File(WebSurfConstants.OUTPUT_FOLDER.concat("CollegesList_collegeDuniya")), 2);
+		fetchCSVFilesFromFolder(new File(WebSurfConstants.OUTPUT_FOLDER.concat("CollegesList_shiksha")), 3);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void generateCsvReport() {
 		log.info("generating csv report process started...");
-		String outputDirectory = WebSurfConstants.OUTPUT_FOLDER.concat("CollegesReview_collegeDuniya");
+		String outputDirectory = WebSurfConstants.OUTPUT_FOLDER.concat("CollegesReview_shiksha");
 		CSVParserServices csvHandler = new CSVParserServices();
 		csvHandler.createDirectory(outputDirectory);
 		String outputFileName = outputDirectory.concat(java.io.File.separator)

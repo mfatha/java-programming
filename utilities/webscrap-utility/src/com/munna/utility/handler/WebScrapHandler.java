@@ -20,6 +20,7 @@ import com.munna.utility.cache.WebSurfConstants;
 import com.munna.utility.impl.CSVParserServices;
 import com.munna.utility.service.impl.generateC360ReviewReport;
 import com.munna.utility.service.impl.generateCDReviewReport;
+import com.munna.utility.service.impl.generateSSReviewReport;
 import com.univocity.parsers.csv.CsvFormat;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
@@ -148,8 +149,10 @@ public abstract class WebScrapHandler {
 						for (String url : urlLinks) {
 							if (handlerType == 1) {
 								utilityService = new generateC360ReviewReport(url);
-							} else {
+							} else if (handlerType == 2) {
 								utilityService = new generateCDReviewReport(url);
+							}  else if (handlerType == 3) {
+								utilityService = new generateSSReviewReport(url);
 							}
 							if (utilityService != null) {
 								futures.add(ExecutorServiceFactory.getInstance("Executor").addService(utilityService));
