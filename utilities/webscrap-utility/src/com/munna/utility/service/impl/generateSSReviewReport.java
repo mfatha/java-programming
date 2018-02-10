@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import com.munna.common.cache.UtilityCache;
 import com.munna.common.service.api.UtilityService;
@@ -40,14 +41,13 @@ public class generateSSReviewReport extends UtilityService{
 	public void process() {
 		try {
 			boolean hasNext = true;
-			int pageNumber = 1;
 			String nextUrl = "";
 			while(hasNext) {
 				if (soupDoc != null) {
 					reviewData = getUserReview(soupDoc);
 					try {
 						if (siteTile != null && !siteTile.equalsIgnoreCase("")) {
-							UtilityCache.getInstance().add(siteTile+pageNumber, reviewData);
+							UtilityCache.getInstance().add(siteTile, reviewData);
 						}
 					} catch (Exception e) {
 						log.error("Error while feefing data to cache.. " + e);
@@ -57,13 +57,12 @@ public class generateSSReviewReport extends UtilityService{
 						}
 					}
 				}
-				//reviews-9?sort_by=year+of+gradution
-				nextUrl = scrapUrl+"-"+pageNumber+"?sort_by=year+of+gradution";
-				soupDoc = (Document) JsoupServices.getInstance().getConnection(nextUrl);
-				if(!hasReviewData(soupDoc)) {
-					hasNext=false;
+				if(hasNextReview(soupDoc)) {
+					nextUrl = soupDoc.getElementsByClass("next").first().select("a[href]").attr("href");
+					soupDoc = (Document) JsoupServices.getInstance().getConnection(nextUrl);
+					siteTile = soupDoc.title();
 				}else {
-					pageNumber++;
+					hasNext=false;
 				}
 			}
 		} catch (Exception e) {
@@ -73,15 +72,22 @@ public class generateSSReviewReport extends UtilityService{
 		}
 	}
 
-	private boolean hasReviewData(Document nextSoupDoc) {
-		
-		return false;
-	}
-
-	private Map<String, String> getUserReview(Document docs) {
+	private Map<String, String> getUserReview(Document Doc) {
 		
 		return null;
 	}
+	
+	private boolean hasNextReview(Document Doc) {
+		Element content = (Element) soupDoc.getElementsByClass("next").first();
+		if(content != null) {
+			String reviewLink = content.select("a[href]").attr("href");
+			log.debug("Next Url link : " + reviewLink);
+			return true;
+		}else {
+			return false;
+		}		
+	}
+
 
 	@Override
 	public void finish() {
