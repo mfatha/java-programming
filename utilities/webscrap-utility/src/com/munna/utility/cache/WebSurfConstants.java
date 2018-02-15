@@ -10,7 +10,7 @@ import java.util.List;
 public class WebSurfConstants {
 
 	public static final int RETRY_COUNT = 5;
-	
+
 	public static final String USER_DIRECTORY = System.getProperty("user.dir").concat(java.io.File.separator);
 
 	public static final String CONF_FOLDER = USER_DIRECTORY.concat("conf").concat(java.io.File.separator);
@@ -32,7 +32,7 @@ public class WebSurfConstants {
 	}
 
 	public static final class C360Constants {
-		
+
 		public static final String BASE_URL = "https://engineering.careers360.com";
 
 		public static final List<String> COLUMN_NAMES = Arrays.asList(new String[] { "College Name", "Home Url",
@@ -42,26 +42,27 @@ public class WebSurfConstants {
 
 		public static final int TOTAL_PAGES_TO_CROWL = 210;
 
-		
 	}
 
-	public final static class CollegeDuniyaConstants{
-		
+	public final static class CollegeDuniyaConstants {
+
 		public static final String BASE_URL = "https://collegedunia.com/india-colleges?ajax=1&college_type=0&page=";
-		
-		public static final List<String> COLUMN_NAMES = Arrays.asList(new String[] { "college_name", "home_url",
-				"review_url", "total_reviewers","over_all_rating", "infrastructure", "academic", "placements", "faculty", "accommodation",
-				"social" });
-		
+
+		public static final List<String> COLUMN_NAMES = Arrays
+				.asList(new String[] { "college_name", "home_url", "review_url", "total_reviewers", "over_all_rating",
+						"infrastructure", "academic", "placements", "faculty", "accommodation", "social" });
+
 		public static final int TOTAL_PAGES_TO_CROWL = 1487;
-		
+
 	}
-	
-	public final static class ShikshaConstants{
-		
+
+	public final static class ShikshaConstants {
+
 		public static final String BASE_URL = "https://www.shiksha.com/btech/resources/college-reviews/";
-		
+
 		public static final int TOTAL_PAGES_TO_CROWL = 814;
+
+		public static final int RECORD_LIMIT = 1000;
 	}
 
 }
