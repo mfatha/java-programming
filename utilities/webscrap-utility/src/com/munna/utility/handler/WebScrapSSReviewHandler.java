@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -45,20 +46,25 @@ public class WebScrapSSReviewHandler extends WebScrapHandler {
 	@Override
 	public void generateCsvReport() {
 		log.info("Writing review data as json...");
+		long start = System.currentTimeMillis();
+
 		writeReviewJson();
-		log.info("finished writing review data as json...");
+
+		long mins = TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - start);
+		log.info("Finished writing review data as json...");
+		log.info("Total time taken for file writing : " + mins + " minutes.");
 	}
 
 	@SuppressWarnings("unchecked")
 	private void writeReviewJson() {
 		final String outputDirectory = WebSurfConstants.OUTPUT_FOLDER.concat("CollegesReview_shiksha");
 		final String outputFileTemplate = outputDirectory.concat(java.io.File.separator).concat("college_review_");
-		String outputFileName = getUpdatedFileName(outputFileTemplate, batchNumber);
+		String outputFileName = "";
 		final int limit = WebSurfConstants.ShikshaConstants.RECORD_LIMIT;
 		int count = 0;
 		try {
-			Map<String, Object> cacheData = UtilityCache.getInstance().getEntireCache();
-			Map<String, Object> reviewData = new HashMap<>();
+			final Map<String, Object> cacheData = UtilityCache.getInstance().getEntireCache();
+			final Map<String, Object> reviewData = new HashMap<>();
 			for (Entry<String, Object> review : cacheData.entrySet()) {
 				final List<Review> reviewList = (List<Review>) review.getValue();
 				if (count == limit) {
@@ -68,6 +74,7 @@ public class WebScrapSSReviewHandler extends WebScrapHandler {
 					count = 0;
 				} else if (reviewList.size() + count <= limit) {
 					reviewData.put(review.getKey(), review.getValue());
+					count += reviewList.size();
 				} else {
 					int index = limit - count;
 					reviewData.put(review.getKey(), reviewList.subList(0, index));
@@ -77,6 +84,10 @@ public class WebScrapSSReviewHandler extends WebScrapHandler {
 					reviewData.put(review.getKey(), reviewList.subList(index, reviewList.size()));
 					count = index;
 				}
+			}
+			if (!reviewData.isEmpty()) {
+				outputFileName = getUpdatedFileName(outputFileTemplate, batchNumber);
+				writeJson(outputFileName, reviewData);
 			}
 		} catch (Exception e) {
 			log.error("error while writing review as json", e);
@@ -97,6 +108,7 @@ public class WebScrapSSReviewHandler extends WebScrapHandler {
 	private void writeAsFile(String filePath, String fileContent) {
 		try {
 			Files.write(Paths.get(filePath), fileContent.getBytes(), StandardOpenOption.CREATE);
+			log.debug("Finished writing the file : " + filePath);
 		} catch (IOException e) {
 			log.error("error while writing to file : " + filePath, e);
 		}
