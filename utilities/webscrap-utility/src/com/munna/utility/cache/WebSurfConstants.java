@@ -9,6 +9,8 @@ import java.util.List;
  */
 public class WebSurfConstants {
 
+	public static final int THREAD_COUNT = 5;
+
 	public static final int RETRY_COUNT = 5;
 
 	public static final String USER_DIRECTORY = System.getProperty("user.dir").concat(java.io.File.separator);
