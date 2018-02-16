@@ -34,27 +34,23 @@ public class JsoupServices {
 		}
 		return jsoup;
 	}
-	
+
 	public Document setConnection(String url) {
 		try {
-			Connection.Response response  = Jsoup.connect(url)
-                    .userAgent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.21 (KHTML, like Gecko) Chrome/19.0.1042.0 Safari/535.21")
-                    .timeout(10000)
-                    .execute();
-			if(response.statusCode() == 200) {
-				Document doc = (Document) Jsoup.connect(url).userAgent(
-						"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.21 (KHTML, like Gecko) Chrome/19.0.1042.0 Safari/535.21")
-						.timeout(10000).get();
+			final String userAgent = UAProvider.randomUA();
+			Connection.Response response = Jsoup.connect(url).userAgent(userAgent).timeout(10000).execute();
+			if (response.statusCode() == 200) {
+				Document doc = (Document) Jsoup.connect(url).userAgent(userAgent).timeout(10000).get();
 				log.info("Jsoup Connection Established, for " + url);
-				//connectionMap.put(url, doc);
+				// connectionMap.put(url, doc);
 				return doc;
-			}else {
+			} else {
 				log.error("error in connecting to .." + url);
 				return null;
 			}
 		} catch (Exception e) {
-			log.error("Error in getting JSoup Connection ["+url+"]: "+ e);
-			//connectionMap.put(url, null);
+			log.error("Error in getting JSoup Connection [" + url + "]: " + e);
+			// connectionMap.put(url, null);
 			return null;
 		}
 	}
@@ -63,19 +59,19 @@ public class JsoupServices {
 		Document soupDoc = setConnection(url);
 		boolean retry = true;
 		int retryCount = 1;
-		while(retry) {
+		while (retry) {
 			if (soupDoc != null) {
 				connectionMap.put(url, soupDoc);
 				retry = false;
 			} else {
 				log.error("cant able to connect to " + url);
-				if(retryCount >= WebSurfConstants.RETRY_COUNT) {
+				if (retryCount >= WebSurfConstants.RETRY_COUNT) {
 					retry = false;
 					connectionMap.put(url, null);
 					log.error("Retry Attempts Also Failed... " + url);
-				}else {
+				} else {
 					retryCount++;
-					log.info("Retrying to Connect For : "+ retryCount +" Time : " + url );
+					log.info("Retrying to Connect For : " + retryCount + " Time : " + url);
 					soupDoc = setConnection(url);
 				}
 			}
