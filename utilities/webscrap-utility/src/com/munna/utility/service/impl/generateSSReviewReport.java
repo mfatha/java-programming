@@ -18,6 +18,7 @@ import com.munna.common.cache.UtilityCache;
 import com.munna.common.service.api.UtilityService;
 import com.munna.utility.bean.Rating;
 import com.munna.utility.bean.Review;
+import com.munna.utility.cache.WebSurfConstants;
 import com.munna.utility.impl.JsoupServices;
 import com.munna.utility.service.utils.StringUtils;
 
@@ -84,7 +85,7 @@ public class generateSSReviewReport extends UtilityService {
 				}
 			}
 		} catch (Exception e) {
-			log.error("error while getting review data from : " + scrapUrl + "\t " + e);
+			log.error("error while getting review data from : " + scrapUrl, e);
 		} finally {
 			log.info("Finished Webscraping For : " + siteTitle);
 		}
@@ -223,5 +224,25 @@ public class generateSSReviewReport extends UtilityService {
 
 	@Override
 	public void finish() {
+
+	}
+
+	/**
+	 * TODO
+	 * 
+	 * Move this to default interface method, if wait needed for all. Also
+	 * change reading thread params from config file.
+	 * 
+	 */
+	@Override
+	public void sleep() {
+		if (WebSurfConstants.THREAD_SLEEP_ENABLED) {
+			try {
+				Thread.sleep(WebSurfConstants.THREAD_SLEEP_DELAY);
+			} catch (InterruptedException e) {
+				log.error("Error occured while sleep");
+			}
+		}
+
 	}
 }
