@@ -46,25 +46,27 @@ public class WebScrapSSReviewHandler extends WebScrapHandler {
 	@Override
 	public void generateCsvReport() {
 		log.info("Writing review data as json...");
-		long start = System.currentTimeMillis();
-
 		writeReviewJson();
-
-		long mins = TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - start);
 		log.info("Finished writing review data as json...");
-		log.info("Total time taken for file writing : " + mins + " minutes.");
 	}
 
 	@SuppressWarnings("unchecked")
 	private void writeReviewJson() {
 		final String outputDirectory = WebSurfConstants.OUTPUT_FOLDER.concat("CollegesReview_shiksha");
 		final String outputFileTemplate = outputDirectory.concat(java.io.File.separator).concat("college_review_");
-		String outputFileName = "";
+
 		final int limit = WebSurfConstants.ShikshaConstants.RECORD_LIMIT;
+		final long start = System.currentTimeMillis();
+
+		String outputFileName = "";
+		int colleges = 0;
 		int count = 0;
+
 		try {
 			final Map<String, Object> cacheData = UtilityCache.getInstance().getEntireCache();
 			final Map<String, Object> reviewData = new HashMap<>();
+			colleges = cacheData.size();
+
 			for (Entry<String, Object> review : cacheData.entrySet()) {
 				final List<Review> reviewList = (List<Review>) review.getValue();
 				if (count == limit) {
@@ -94,6 +96,9 @@ public class WebScrapSSReviewHandler extends WebScrapHandler {
 		} finally {
 			UtilityCache.getInstance().clearCache();
 			JsoupServices.getInstance().clearConnections();
+			long mins = TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - start);
+			log.info("Total time taken for file writing : " + mins + " minutes for " + colleges + " colleges");
+
 		}
 	}
 

@@ -3,10 +3,6 @@
  */
 package com.munna.utility.service.impl;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -156,13 +152,13 @@ public class generateSSReviewReport extends UtilityService {
 						break;
 
 					default:
-						log.warn("Invalid review category !! : " + category);
+						log.debug("Invalid review category !! : " + category);
 						review.setGenericReview(reviewDetail.text().trim());
 						continue;
 					}
 
 				} else {
-					log.warn("Review category not mentioned. Hence generic review !!");
+					log.debug("Review category not mentioned. Hence generic review !!");
 					review.setGenericReview(reviewDetail.text().trim());
 				}
 			}
@@ -206,20 +202,12 @@ public class generateSSReviewReport extends UtilityService {
 				break;
 
 			default:
-				log.warn("Invalid rating !!");
+				log.debug("Invalid rating !!");
 				break;
 			}
 		}
 
 		return rating;
-	}
-
-	private void writeAsFile(Document doc) {
-		try {
-			Files.write(Paths.get("config.txt"), doc.toString().getBytes(), StandardOpenOption.CREATE);
-		} catch (IOException e) {
-			log.error(e);
-		}
 	}
 
 	private boolean hasNextReview(Document Doc) {
