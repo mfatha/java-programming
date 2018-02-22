@@ -3,10 +3,6 @@
  */
 package com.munna.utility.service.impl;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +18,7 @@ import com.munna.common.cache.UtilityCache;
 import com.munna.common.service.api.UtilityService;
 import com.munna.utility.bean.Rating;
 import com.munna.utility.bean.Review;
+import com.munna.utility.cache.WebSurfConstants;
 import com.munna.utility.impl.JsoupServices;
 import com.munna.utility.service.utils.StringUtils;
 
@@ -88,7 +85,7 @@ public class generateSSReviewReport extends UtilityService {
 				}
 			}
 		} catch (Exception e) {
-			log.error("error while getting review data from : " + scrapUrl + "\t " + e);
+			log.error("error while getting review data from : " + scrapUrl, e);
 		} finally {
 			log.info("Finished Webscraping For : " + siteTitle);
 		}
@@ -156,13 +153,13 @@ public class generateSSReviewReport extends UtilityService {
 						break;
 
 					default:
-						log.warn("Invalid review category !! : " + category);
+						log.debug("Invalid review category !! : " + category);
 						review.setGenericReview(reviewDetail.text().trim());
 						continue;
 					}
 
 				} else {
-					log.warn("Review category not mentioned. Hence generic review !!");
+					log.debug("Review category not mentioned. Hence generic review !!");
 					review.setGenericReview(reviewDetail.text().trim());
 				}
 			}
@@ -172,7 +169,6 @@ public class generateSSReviewReport extends UtilityService {
 
 		return reviewList;
 	}
-
 	private Rating parseRating(Element batchElm) {
 		final Element ratingElm = batchElm.getElementsByClass("rating-scr").first();
 		final String overallrating = ratingElm.text().substring(0, ratingElm.text().indexOf("/")).trim();
@@ -206,20 +202,12 @@ public class generateSSReviewReport extends UtilityService {
 				break;
 
 			default:
-				log.warn("Invalid rating !!");
+				log.debug("Invalid rating !!");
 				break;
 			}
 		}
 
 		return rating;
-	}
-
-	private void writeAsFile(Document doc) {
-		try {
-			Files.write(Paths.get("config.txt"), doc.toString().getBytes(), StandardOpenOption.CREATE);
-		} catch (IOException e) {
-			log.error(e);
-		}
 	}
 
 	private boolean hasNextReview(Document Doc) {
@@ -236,4 +224,24 @@ public class generateSSReviewReport extends UtilityService {
 	@Override
 	public void finish() {
 	}
+
+	/**
+	 * TODO
+	 * 
+	 * Move this to default interface method, if wait needed for all. Also
+	 * change reading thread params from config file.
+	 * 
+	 */
+	@Override
+	public void sleep() {
+		if (WebSurfConstants.THREAD_SLEEP_ENABLED) {
+			try {
+				Thread.sleep(WebSurfConstants.THREAD_SLEEP_DELAY);
+			} catch (InterruptedException e) {
+				log.error("Error occured while sleep");
+			}
+		}
+
+	}
+
 }

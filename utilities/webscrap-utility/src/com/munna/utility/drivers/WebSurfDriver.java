@@ -7,6 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.munna.common.executor.factory.ExecutorServiceFactory;
+import com.munna.utility.cache.WebSurfConstants;
 import com.munna.utility.handler.WebScrapC360ListHandler;
 import com.munna.utility.handler.WebScrapC360ReviewHandler;
 import com.munna.utility.handler.WebScrapCDListHandler;
@@ -53,7 +54,7 @@ public class WebSurfDriver {
 				log.error("Unknown option selection, Exiting Utility");
 			}
 			if (webScrap != null) {
-				ExecutorServiceFactory.initialize("Executor", 10);
+				ExecutorServiceFactory.initialize("Executor", WebSurfConstants.THREAD_COUNT);
 				webScrap.startProcess();
 				ExecutorServiceFactory.getInstance("Executor").shutdown();
 				log.info("Executor ShutDowned.....");

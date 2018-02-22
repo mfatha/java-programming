@@ -2,12 +2,19 @@ package com.munna.utility.cache;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Mohammed Fathauddin
  * @since 2018
  */
 public class WebSurfConstants {
+
+	public static final int THREAD_COUNT = 5;
+
+	public static final boolean THREAD_SLEEP_ENABLED = true;
+
+	public static final long THREAD_SLEEP_DELAY = TimeUnit.MINUTES.toMillis(5);
 
 	public static final int RETRY_COUNT = 5;
 

@@ -113,8 +113,8 @@ public abstract class WebScrapHandler {
 			log.error(e);
 		} finally {
 			log.info("TOTAL NUMBER OF FILES CRAWLED FOR UTILITY : " + toalNumberOfFiles);
-			long end = TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis());
-			log.info("Final... TIME TAKEN FOR Folder Crawl : " + folder.getName() + " is :" + (end - start));
+			long mins = TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - start);
+			log.info("Final... TIME TAKEN FOR Folder Crawl : " + folder.getName() + " is :" + mins + " minutes.");
 		}
 	}
 
@@ -151,7 +151,7 @@ public abstract class WebScrapHandler {
 								utilityService = new generateC360ReviewReport(url);
 							} else if (handlerType == 2) {
 								utilityService = new generateCDReviewReport(url);
-							}  else if (handlerType == 3) {
+							} else if (handlerType == 3) {
 								utilityService = new generateSSReviewReport(url);
 							}
 							if (utilityService != null) {
@@ -177,7 +177,7 @@ public abstract class WebScrapHandler {
 		} finally {
 			log.info("Utility Completed.....");
 			log.info("TIME TAKEN FOR FILE : " + fileEntry.getName() + " is : "
-					+ (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis()) - start));
+					+ (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - start) + " minutes."));
 		}
 	}
 
