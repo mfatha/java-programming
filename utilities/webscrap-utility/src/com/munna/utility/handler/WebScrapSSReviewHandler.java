@@ -54,19 +54,15 @@ public class WebScrapSSReviewHandler extends WebScrapHandler {
 	private void writeReviewJson() {
 		final String outputDirectory = WebSurfConstants.OUTPUT_FOLDER.concat("CollegesReview_shiksha");
 		final String outputFileTemplate = outputDirectory.concat(java.io.File.separator).concat("college_review_");
-
 		final int limit = WebSurfConstants.ShikshaConstants.RECORD_LIMIT;
 		final long start = System.currentTimeMillis();
-
 		String outputFileName = "";
 		int colleges = 0;
 		int count = 0;
-
 		try {
 			final Map<String, Object> cacheData = UtilityCache.getInstance().getEntireCache();
 			final Map<String, Object> reviewData = new HashMap<>();
 			colleges = cacheData.size();
-
 			for (Entry<String, Object> review : cacheData.entrySet()) {
 				final List<Review> reviewList = (List<Review>) review.getValue();
 				if (count == limit) {
@@ -98,7 +94,6 @@ public class WebScrapSSReviewHandler extends WebScrapHandler {
 			JsoupServices.getInstance().clearConnections();
 			long mins = TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - start);
 			log.info("Total time taken for file writing : " + mins + " minutes for " + colleges + " colleges");
-
 		}
 	}
 

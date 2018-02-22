@@ -169,7 +169,6 @@ public class generateSSReviewReport extends UtilityService {
 
 		return reviewList;
 	}
-
 	private Rating parseRating(Element batchElm) {
 		final Element ratingElm = batchElm.getElementsByClass("rating-scr").first();
 		final String overallrating = ratingElm.text().substring(0, ratingElm.text().indexOf("/")).trim();
@@ -224,7 +223,6 @@ public class generateSSReviewReport extends UtilityService {
 
 	@Override
 	public void finish() {
-
 	}
 
 	/**
@@ -245,4 +243,5 @@ public class generateSSReviewReport extends UtilityService {
 		}
 
 	}
+
 }
