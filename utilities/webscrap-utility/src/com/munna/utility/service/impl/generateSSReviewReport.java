@@ -47,8 +47,6 @@ public class generateSSReviewReport extends UtilityService {
 
 	String siteTitle = "";
 
-	Map<String, List<Review>> reviewData = new HashMap<>();
-
 	public generateSSReviewReport(String url) {
 		scrapUrl = url;
 	}
@@ -84,6 +82,7 @@ public class generateSSReviewReport extends UtilityService {
 				}else {
 					log.error("Soup Object is empty for: ("+ url +")" );
 					UtilityCache.getInstance().add(college, reviewList);
+					reviewList.clear();
 					synchronized (generateSSReviewReport.class) {
 						final Map<String, Object> cacheData = UtilityCache.getInstance().getEntireCache();
 						if(cacheData != null && cacheData.size() !=0) {
@@ -100,7 +99,6 @@ public class generateSSReviewReport extends UtilityService {
 					siteTitle = soupDoc.title();
 				} else {
 					hasNext = false;
-					reviewData.put(college, reviewList);
 					UtilityCache.getInstance().add(college, reviewList);
 				}
 			}
