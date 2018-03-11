@@ -14,7 +14,7 @@ public class WebSurfConstants {
 
 	public static final boolean THREAD_SLEEP_ENABLED = true;
 
-	public static final long THREAD_SLEEP_DELAY = TimeUnit.MINUTES.toMillis(5);
+	public static final long THREAD_SLEEP_DELAY = TimeUnit.MINUTES.toMillis(3);
 
 	public static final int RETRY_COUNT = 5;
 
