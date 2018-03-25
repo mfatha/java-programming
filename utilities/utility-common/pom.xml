@@ -2,12 +2,14 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.munna.utility.parent</groupId>
-	<artifactId>com.munna.utility</artifactId>
+	<artifactId>utility-common</artifactId>
 	<version>0.1</version>
 	<name>utility-common</name>
+	
 	<properties>
 		<log4j.version>2.11.0</log4j.version>
 	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
@@ -35,6 +37,7 @@
 			<version>2.3.0</version>
 		</dependency>
 	</dependencies>
+	
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
@@ -48,4 +51,5 @@
 			</plugin>
 		</plugins>
 	</build>
+
 </project>

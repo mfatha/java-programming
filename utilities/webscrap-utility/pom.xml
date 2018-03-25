@@ -2,20 +2,21 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.munna.utilities</groupId>
-	<artifactId>com.munna.websurfutility</artifactId>
+	<artifactId>websurfutility</artifactId>
 	<version>0.1</version>
+	<name>websurfutility</name>
+	
 	<properties>
 		<jfx.version>1.5</jfx.version>
 		<jsoup.version>1.8.3</jsoup.version>
 	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>com.munna.utility.parent</groupId>
-			<artifactId>com.munna.utility</artifactId>
+			<artifactId>utility-common</artifactId>
 			<version>0.1</version>
 		</dependency>
-	<!-- <dependency> <groupId>com.zenjava</groupId> <artifactId>javafx-maven-plugin</artifactId> 
-		<version>${jfx.version}</version> </dependency> -->
 		<dependency>
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
@@ -27,6 +28,7 @@
 		    <version>20160810</version>
 		</dependency>
 	</dependencies>
+	
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
@@ -38,6 +40,18 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>com.munna.utility.drivers.WebSurfDriver</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
+
 </project>
