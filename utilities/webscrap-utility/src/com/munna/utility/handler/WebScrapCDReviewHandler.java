@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.munna.common.cache.UtilityCache;
 import com.munna.utility.cache.WebSurfConstants;
@@ -21,20 +21,20 @@ import com.munna.utility.impl.JsoupServices;
  */
 public class WebScrapCDReviewHandler extends WebScrapHandler {
 
-	private Log log = LogFactory.getLog(this.getClass());
+	private static final Logger LOGGER = LoggerFactory.getLogger(WebScrapCDReviewHandler.class);
 
 	private long batchNumber = 1L;
 
 	@Override
 	public void startProcess() {
-		log.info("Reading CSV files from College_list Folder..");
+		LOGGER.info("Reading CSV files from College_list Folder..");
 		fetchCSVFilesFromFolder(new File(WebSurfConstants.OUTPUT_FOLDER.concat("CollegesList_collegeDuniya")), 2);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public void generateCsvReport() {
-		log.info("generating csv report process started...");
+		LOGGER.info("generating csv report process started...");
 		String outputDirectory = WebSurfConstants.OUTPUT_FOLDER.concat("CollegesReview_collegeDuniya");
 		CSVParserServices csvHandler = new CSVParserServices();
 		csvHandler.createDirectory(outputDirectory);
@@ -48,7 +48,7 @@ public class WebScrapCDReviewHandler extends WebScrapHandler {
 				columnData.add((Map<String, Object>) entry.getValue());
 			}
 		} catch (Exception e) {
-			log.error("error while parsing cache data :" + e);
+			LOGGER.error("error while parsing cache data :" + e);
 		}
 		try {
 			FileWriter fileWriter = new FileWriter(outputFileName, true);
@@ -88,12 +88,12 @@ public class WebScrapCDReviewHandler extends WebScrapHandler {
 			fileWriter.flush();
 			fileWriter.close();
 		} catch (Exception e) {
-			log.error(e);
+			LOGGER.error("Error occured", e);
 		} finally {
 			batchNumber++;
 			UtilityCache.getInstance().clearCache();
 			JsoupServices.getInstance().clearConnections();
-			log.info("finished csv report generation process...");
+			LOGGER.info("finished csv report generation process...");
 		}
 	}
 

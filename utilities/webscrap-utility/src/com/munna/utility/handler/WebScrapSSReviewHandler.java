@@ -11,9 +11,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.munna.common.cache.UtilityCache;
 import com.munna.utility.bean.Review;
@@ -33,21 +33,21 @@ import com.munna.utility.impl.JsoupServices;
  */
 public class WebScrapSSReviewHandler extends WebScrapHandler {
 
-	private Log log = LogFactory.getLog(this.getClass());
+	private static final Logger LOGGER = LoggerFactory.getLogger(WebScrapSSReviewHandler.class);
 
 	private long batchNumber = 1L;
 
 	@Override
 	public void startProcess() {
-		log.info("Reading CSV files from College_list Folder..");
+		LOGGER.info("Reading CSV files from College_list Folder..");
 		fetchCSVFilesFromFolder(new File(WebSurfConstants.OUTPUT_FOLDER.concat("CollegesList_shiksha")), 3);
 	}
 
 	@Override
 	public void generateCsvReport() {
-		log.info("Writing review data as json...");
+		LOGGER.info("Writing review data as json...");
 		writeReviewJson();
-		log.info("Finished writing review data as json...");
+		LOGGER.info("Finished writing review data as json...");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -88,12 +88,12 @@ public class WebScrapSSReviewHandler extends WebScrapHandler {
 				writeJson(outputFileName, reviewData);
 			}
 		} catch (Exception e) {
-			log.error("error while writing review as json", e);
+			LOGGER.error("error while writing review as json", e);
 		} finally {
 			UtilityCache.getInstance().clearCache();
 			JsoupServices.getInstance().clearConnections();
 			long mins = TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - start);
-			log.info("Total time taken for file writing : " + mins + " minutes for " + colleges + " colleges");
+			LOGGER.info("Total time taken for file writing : " + mins + " minutes for " + colleges + " colleges");
 		}
 	}
 
@@ -108,9 +108,9 @@ public class WebScrapSSReviewHandler extends WebScrapHandler {
 	private void writeAsFile(String filePath, String fileContent) {
 		try {
 			Files.write(Paths.get(filePath), fileContent.getBytes(), StandardOpenOption.CREATE);
-			log.debug("Finished writing the file : " + filePath);
+			LOGGER.debug("Finished writing the file : " + filePath);
 		} catch (IOException e) {
-			log.error("error while writing to file : " + filePath, e);
+			LOGGER.error("error while writing to file : " + filePath, e);
 		}
 	}
 

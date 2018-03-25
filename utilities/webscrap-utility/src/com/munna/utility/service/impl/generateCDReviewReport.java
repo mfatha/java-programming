@@ -3,11 +3,11 @@ package com.munna.utility.service.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.munna.common.cache.UtilityCache;
 import com.munna.common.service.api.UtilityService;
@@ -15,7 +15,7 @@ import com.munna.utility.impl.JsoupServices;
 
 public class generateCDReviewReport extends UtilityService {
 
-	private Log log = LogFactory.getLog(this.getClass());
+	private static final Logger LOGGER = LoggerFactory.getLogger(generateCDReviewReport.class);
 
 	String scrapUrl = "";
 
@@ -32,9 +32,9 @@ public class generateCDReviewReport extends UtilityService {
 	@Override
 	public void init() {
 		soupDoc = (Document) JsoupServices.getInstance().getConnection(scrapUrl);
-		if(soupDoc != null) {
+		if (soupDoc != null) {
 			siteTile = soupDoc.title();
-			log.info("Getting Review Data from :" + siteTile);
+			LOGGER.info("Getting Review Data from :" + siteTile);
 		}
 	}
 
@@ -57,21 +57,22 @@ public class generateCDReviewReport extends UtilityService {
 				String overAllRating = headerBlock.getElementsByClass("head_desc").first()
 						.getElementsByClass("major_data").first().text();
 				reviewData.put("over_all_rating", overAllRating);
-				//Body parsing.
+				// Body parsing.
 				Element bodyBlock = inner_review.getElementsByClass("content_body").first();
 				Elements reviewDataBlocks = bodyBlock.getElementsByClass("rating-block");
 				if (reviewDataBlocks != null) {
 					for (Element dataBlock : reviewDataBlocks) {
-						reviewData.put(dataBlock.getElementsByClass("rating_name").first().text(),dataBlock.getElementsByClass("rating_value").first().text());
+						reviewData.put(dataBlock.getElementsByClass("rating_name").first().text(),
+								dataBlock.getElementsByClass("rating_value").first().text());
 					}
 				}
 			} else {
-				log.error("cant able to [review] connect to " + scrapUrl);
+				LOGGER.error("cant able to [review] connect to " + scrapUrl);
 			}
 		} catch (Exception e) {
-			log.error("error while getting review data from : " + scrapUrl + "\t " + e);
+			LOGGER.error("error while getting review data from : " + scrapUrl + "\t " + e);
 		} finally {
-			log.info("Finished Webscraping For : " + siteTile);
+			LOGGER.info("Finished Webscraping For : " + siteTile);
 		}
 	}
 
@@ -82,7 +83,7 @@ public class generateCDReviewReport extends UtilityService {
 				UtilityCache.getInstance().add(siteTile, reviewData);
 			}
 		} catch (Exception e) {
-			log.error("Error while feefing data to cache.. " + e);
+			LOGGER.error("Error while feefing data to cache.. " + e);
 		} finally {
 			JsoupServices.getInstance().closeConnection(scrapUrl);
 		}

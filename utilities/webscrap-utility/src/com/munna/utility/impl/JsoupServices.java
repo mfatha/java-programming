@@ -3,11 +3,11 @@ package com.munna.utility.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.munna.utility.cache.WebSurfConstants;
 
@@ -17,7 +17,7 @@ import com.munna.utility.cache.WebSurfConstants;
  */
 public class JsoupServices {
 
-	private final Log log = LogFactory.getLog(this.getClass());
+	private static final Logger LOGGER = LoggerFactory.getLogger(JsoupServices.class);
 
 	private JsoupServices() {
 	}
@@ -41,15 +41,15 @@ public class JsoupServices {
 			Connection.Response response = Jsoup.connect(url).userAgent(userAgent).timeout(10000).execute();
 			if (response.statusCode() == 200) {
 				Document doc = (Document) Jsoup.connect(url).userAgent(userAgent).timeout(10000).get();
-				log.info("Jsoup Connection Established, for " + url);
+				LOGGER.info("Jsoup Connection Established, for " + url);
 				// connectionMap.put(url, doc);
 				return doc;
 			} else {
-				log.error("error in connecting to .." + url);
+				LOGGER.error("error in connecting to .." + url);
 				return null;
 			}
 		} catch (Exception e) {
-			log.error("Error in getting JSoup Connection [" + url + "]: " + e);
+			LOGGER.error("Error in getting JSoup Connection [" + url + "]: " + e);
 			// connectionMap.put(url, null);
 			return null;
 		}
@@ -64,14 +64,14 @@ public class JsoupServices {
 				connectionMap.put(url, soupDoc);
 				retry = false;
 			} else {
-				log.error("cant able to connect to " + url);
+				LOGGER.error("cant able to connect to " + url);
 				if (retryCount >= WebSurfConstants.RETRY_COUNT) {
 					retry = false;
 					connectionMap.put(url, null);
-					log.error("Retry Attempts Also Failed... " + url);
+					LOGGER.error("Retry Attempts Also Failed... " + url);
 				} else {
 					retryCount++;
-					log.info("Retrying to Connect For : " + retryCount + " Time : " + url);
+					LOGGER.info("Retrying to Connect For : " + retryCount + " Time : " + url);
 					soupDoc = setConnection(url);
 				}
 			}
@@ -90,9 +90,9 @@ public class JsoupServices {
 	public void closeConnection(String url) {
 		if (connectionMap.containsKey(url)) {
 			connectionMap.remove(url);
-			log.info("Connection closed.. (" + url + ")");
+			LOGGER.info("Connection closed.. (" + url + ")");
 		} else {
-			log.error("Connection not Found .. (" + url + ")");
+			LOGGER.error("Connection not Found .. (" + url + ")");
 		}
 	}
 
@@ -100,6 +100,6 @@ public class JsoupServices {
 		if (!connectionMap.isEmpty()) {
 			connectionMap.clear();
 		}
-		log.info("All Jsoup Document Connections are cleared..");
+		LOGGER.info("All Jsoup Document Connections are cleared..");
 	}
 }

@@ -8,11 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.munna.common.cache.UtilityCache;
 import com.munna.common.service.api.UtilityService;
@@ -31,7 +31,7 @@ import com.munna.utility.service.utils.StringUtils;
  */
 public class generateSSReviewReport extends UtilityService {
 
-	private Log log = LogFactory.getLog(this.getClass());
+	private static final Logger LOGGER = LoggerFactory.getLogger(generateSSReviewReport.class);
 
 	String scrapUrl = "";
 
@@ -50,7 +50,7 @@ public class generateSSReviewReport extends UtilityService {
 		soupDoc = (Document) JsoupServices.getInstance().getConnection(scrapUrl);
 		if (soupDoc != null) {
 			siteTitle = soupDoc.title();
-			log.info("Getting Review Data from :" + siteTitle);
+			LOGGER.info("Getting Review Data from :" + siteTitle);
 		}
 	}
 
@@ -67,7 +67,7 @@ public class generateSSReviewReport extends UtilityService {
 					try {
 						parseReviewData(soupDoc, reviewList);
 					} catch (Exception e) {
-						log.error("Error while feeding data to cache.. " + e);
+						LOGGER.error("Error while feeding data to cache.. " + e);
 					} finally {
 						if (!StringUtils.isEmpty(url)) {
 							JsoupServices.getInstance().closeConnection(url);
@@ -85,9 +85,9 @@ public class generateSSReviewReport extends UtilityService {
 				}
 			}
 		} catch (Exception e) {
-			log.error("error while getting review data from : " + scrapUrl, e);
+			LOGGER.error("error while getting review data from : " + scrapUrl, e);
 		} finally {
-			log.info("Finished Webscraping For : " + siteTitle);
+			LOGGER.info("Finished Webscraping For : " + siteTitle);
 		}
 	}
 
@@ -153,13 +153,13 @@ public class generateSSReviewReport extends UtilityService {
 						break;
 
 					default:
-						log.debug("Invalid review category !! : " + category);
+						LOGGER.debug("Invalid review category !! : " + category);
 						review.setGenericReview(reviewDetail.text().trim());
 						continue;
 					}
 
 				} else {
-					log.debug("Review category not mentioned. Hence generic review !!");
+					LOGGER.debug("Review category not mentioned. Hence generic review !!");
 					review.setGenericReview(reviewDetail.text().trim());
 				}
 			}
@@ -169,6 +169,7 @@ public class generateSSReviewReport extends UtilityService {
 
 		return reviewList;
 	}
+
 	private Rating parseRating(Element batchElm) {
 		final Element ratingElm = batchElm.getElementsByClass("rating-scr").first();
 		final String overallrating = ratingElm.text().substring(0, ratingElm.text().indexOf("/")).trim();
@@ -202,7 +203,7 @@ public class generateSSReviewReport extends UtilityService {
 				break;
 
 			default:
-				log.debug("Invalid rating !!");
+				LOGGER.debug("Invalid rating !!");
 				break;
 			}
 		}
@@ -214,7 +215,7 @@ public class generateSSReviewReport extends UtilityService {
 		Element content = (Element) soupDoc.getElementsByClass("next").first();
 		if (content != null) {
 			String reviewLink = content.select("a[href]").attr("href");
-			log.debug("Next Url link : " + reviewLink);
+			LOGGER.debug("Next Url link : " + reviewLink);
 			return true;
 		} else {
 			return false;
@@ -238,7 +239,7 @@ public class generateSSReviewReport extends UtilityService {
 			try {
 				Thread.sleep(WebSurfConstants.THREAD_SLEEP_DELAY);
 			} catch (InterruptedException e) {
-				log.error("Error occured while sleep");
+				LOGGER.error("Error occured while sleep");
 			}
 		}
 

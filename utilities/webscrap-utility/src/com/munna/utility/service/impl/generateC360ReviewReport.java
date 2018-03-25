@@ -3,11 +3,11 @@ package com.munna.utility.service.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.munna.common.cache.UtilityCache;
 import com.munna.common.service.api.UtilityService;
@@ -20,7 +20,7 @@ import com.munna.utility.impl.JsoupServices;
  */
 public class generateC360ReviewReport extends UtilityService {
 
-	private Log log = LogFactory.getLog(this.getClass());
+	private static final Logger LOGGER = LoggerFactory.getLogger(generateC360ReviewReport.class);
 
 	private String BaseUrl = WebSurfConstants.C360Constants.BASE_URL;
 
@@ -42,9 +42,9 @@ public class generateC360ReviewReport extends UtilityService {
 	public void init() {
 		// Getting Review Link from College Details Page [Homme to Review Tab]
 		soupDoc = (Document) JsoupServices.getInstance().getConnection(scrapUrl);
-		if(soupDoc != null) {
+		if (soupDoc != null) {
 			siteTile = soupDoc.title();
-			log.info("Started Webscraping For : " + siteTile);
+			LOGGER.info("Started Webscraping For : " + siteTile);
 			Element content = (Element) soupDoc.getElementsByClass("inner-tab").first();
 			String reviewLink = "";
 			Elements rlink = content.select("li");
@@ -57,18 +57,18 @@ public class generateC360ReviewReport extends UtilityService {
 				soupDoc = (Document) JsoupServices.getInstance().getConnection(BaseUrl + reviewLink);
 				this.reviewLink = BaseUrl + reviewLink;
 			} else {
-				log.error("Can't Find Review Link for the URL : " + scrapUrl);
+				LOGGER.error("Can't Find Review Link for the URL : " + scrapUrl);
 				soupDoc = null;
 			}
-		}else {
-			log.error("cant able to [home] connect to " + scrapUrl);
+		} else {
+			LOGGER.error("cant able to [home] connect to " + scrapUrl);
 		}
 	}
 
 	@Override
 	public void process() {
 		// Getting the Review data from the College Review Page
-		log.info("Getting Review Data from :" + siteTile);
+		LOGGER.info("Getting Review Data from :" + siteTile);
 		try {
 			if (soupDoc != null) {
 				reviewData.put("College Name", (soupDoc.getElementsByClass("titleNameCol").first().text() == null ? ""
@@ -98,13 +98,13 @@ public class generateC360ReviewReport extends UtilityService {
 						}
 					}
 				}
-			}else {
-				log.error("cant able to [review] connect to" + scrapUrl);
+			} else {
+				LOGGER.error("cant able to [review] connect to" + scrapUrl);
 			}
 		} catch (Exception e) {
-			log.error("error while getting review data from : " + reviewLink + "\t " + e);
+			LOGGER.error("error while getting review data from : " + reviewLink + "\t " + e);
 		} finally {
-			log.info("Finished Webscraping For : " + siteTile);
+			LOGGER.info("Finished Webscraping For : " + siteTile);
 		}
 
 	}
@@ -112,11 +112,11 @@ public class generateC360ReviewReport extends UtilityService {
 	@Override
 	public void finish() {
 		try {
-			if(siteTile != null && !siteTile.equalsIgnoreCase("")) {
+			if (siteTile != null && !siteTile.equalsIgnoreCase("")) {
 				UtilityCache.getInstance().add(siteTile, reviewData);
-			}			
+			}
 		} catch (Exception e) {
-			log.error("Error while feefing data to cache.. " + e);
+			LOGGER.error("Error while feefing data to cache.. " + e);
 		} finally {
 			JsoupServices.getInstance().closeConnection(reviewLink);
 			JsoupServices.getInstance().closeConnection(scrapUrl);
