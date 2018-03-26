@@ -4,11 +4,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.munna.common.properties.PropertiesProvider;
 import com.munna.utility.cache.WebSurfConstants;
@@ -17,7 +17,7 @@ import com.munna.utility.impl.JsoupServices;
 
 public class WebScrapC360ListHandler extends WebScrapHandler {
 
-	private static Log log = LogFactory.getLog(WebScrapC360ListHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(WebScrapC360ListHandler.class);
 
 	private long recordCount = 1L;
 
@@ -52,7 +52,7 @@ public class WebScrapC360ListHandler extends WebScrapHandler {
 					hasNext = false;
 				}
 			} catch (Exception e) {
-				log.error("Error in parsing the Links " + e);
+				LOGGER.error("Error in parsing the Links " + e);
 				hasNext = false;
 			}
 		}
@@ -62,7 +62,6 @@ public class WebScrapC360ListHandler extends WebScrapHandler {
 		}
 		JsoupServices.getInstance().clearConnections();
 	}
-		
 
 	protected void buildCSVFile(ArrayList<String> datas, int typeCode) {
 		CSVParserServices csvparser = new CSVParserServices();
@@ -87,18 +86,16 @@ public class WebScrapC360ListHandler extends WebScrapHandler {
 			fileWriter.flush();
 			fileWriter.close();
 		} catch (IOException e) {
-			log.error(e);
+			LOGGER.error("Error occured", e);
 		} finally {
-			log.info("Data id Witten to file : " + "review_File" + recordCount + ".csv");
+			LOGGER.info("Data id Witten to file : " + "review_File" + recordCount + ".csv");
 			recordCount++;
 		}
 	}
 
 	@Override
 	public void generateCsvReport() {
-		log.info("Report has Been generated simulaneously in this...");
+		LOGGER.info("Report has Been generated simulaneously in this...");
 	}
-
-
 
 }

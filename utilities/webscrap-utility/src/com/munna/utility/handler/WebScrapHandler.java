@@ -10,8 +10,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.munna.common.executor.factory.ExecutorServiceFactory;
 import com.munna.common.service.api.UtilityService;
@@ -31,7 +31,7 @@ import com.univocity.parsers.csv.CsvParserSettings;
  */
 public abstract class WebScrapHandler {
 
-	private Log log = LogFactory.getLog(this.getClass());
+	private static final Logger LOGGER = LoggerFactory.getLogger(WebScrapHandler.class);
 
 	private long recordCount = 1L;
 
@@ -86,9 +86,9 @@ public abstract class WebScrapHandler {
 			fileWriter.flush();
 			fileWriter.close();
 		} catch (IOException e) {
-			log.error(e);
+			LOGGER.error("Error occured", e);
 		} finally {
-			log.info("Data id Witten to file : " + "review_File" + recordCount + ".csv");
+			LOGGER.info("Data id Witten to file : " + "review_File" + recordCount + ".csv");
 			recordCount++;
 		}
 	}
@@ -110,16 +110,16 @@ public abstract class WebScrapHandler {
 				}
 			}
 		} catch (Exception e) {
-			log.error(e);
+			LOGGER.error("Error occured", e);
 		} finally {
-			log.info("TOTAL NUMBER OF FILES CRAWLED FOR UTILITY : " + toalNumberOfFiles);
+			LOGGER.info("TOTAL NUMBER OF FILES CRAWLED FOR UTILITY : " + toalNumberOfFiles);
 			long mins = TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - start);
-			log.info("Final... TIME TAKEN FOR Folder Crawl : " + folder.getName() + " is :" + mins + " minutes.");
+			LOGGER.info("Final... TIME TAKEN FOR Folder Crawl : " + folder.getName() + " is :" + mins + " minutes.");
 		}
 	}
 
 	private void readDataFromCSV(File fileEntry, int handlerType) {
-		log.info("fetching Data for : " + fileEntry.getName());
+		LOGGER.info("fetching Data for : " + fileEntry.getName());
 		long lineNumber = 1L;
 		CSVParser csvParser = new CSVParser();
 		ArrayList<String> urlLinks = new ArrayList<String>();
@@ -136,7 +136,7 @@ public abstract class WebScrapHandler {
 				String[] row;
 				while ((row = parser.parseNext()) != null) {
 					if (lineNumber == 1L) {
-						log.info("removing column Names from CSV File...[Header (1st Row)]");
+						LOGGER.info("removing column Names from CSV File...[Header (1st Row)]");
 					} else {
 						urlLinks.add(row[0]);
 					}
@@ -162,7 +162,7 @@ public abstract class WebScrapHandler {
 							future.get();
 						}
 					} catch (Exception e) {
-						log.error(e);
+						LOGGER.error("Error occured", e);
 					} finally {
 						synchronized (WebScrapHandler.class) {
 							generateCsvReport();
@@ -173,10 +173,10 @@ public abstract class WebScrapHandler {
 			}
 
 		} catch (Exception e) {
-			log.error("Error throwed in readDataFromCSV method due to  : " + e);
+			LOGGER.error("Error throwed in readDataFromCSV method due to  : " + e);
 		} finally {
-			log.info("Utility Completed.....");
-			log.info("TIME TAKEN FOR FILE : " + fileEntry.getName() + " is : "
+			LOGGER.info("Utility Completed.....");
+			LOGGER.info("TIME TAKEN FOR FILE : " + fileEntry.getName() + " is : "
 					+ (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - start) + " minutes."));
 		}
 	}

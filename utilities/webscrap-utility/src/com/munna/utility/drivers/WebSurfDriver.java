@@ -3,8 +3,8 @@ package com.munna.utility.drivers;
 import java.util.Scanner;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.munna.common.executor.factory.ExecutorServiceFactory;
 import com.munna.utility.cache.WebSurfConstants;
@@ -22,7 +22,7 @@ import com.munna.utility.handler.WebScrapSSReviewHandler;
  */
 public class WebSurfDriver {
 
-	private static Log log = LogFactory.getLog(WebSurfDriver.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(WebSurfDriver.class);
 
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
@@ -51,16 +51,16 @@ public class WebSurfDriver {
 			} else if (proceed != null && "6".equalsIgnoreCase(proceed.trim())) {
 				webScrap = new WebScrapSSReviewHandler();
 			} else {
-				log.error("Unknown option selection, Exiting Utility");
+				LOGGER.error("Unknown option selection, Exiting Utility");
 			}
 			if (webScrap != null) {
 				ExecutorServiceFactory.initialize("Executor", WebSurfConstants.THREAD_COUNT);
 				webScrap.startProcess();
 				ExecutorServiceFactory.getInstance("Executor").shutdown();
-				log.info("Executor ShutDowned.....");
+				LOGGER.info("Executor ShutDowned.....");
 			}
 		} catch (Exception e) {
-			log.error("Error in main process", e);
+			LOGGER.error("Error in main process", e);
 		} finally {
 			IOUtils.closeQuietly(sc);
 		}

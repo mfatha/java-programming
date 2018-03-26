@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /*
  * @author Mohammed Fathauddin
@@ -20,7 +20,7 @@ public class PropertiesProvider {
 
 	private static PropertiesProvider propertiesProvider;
 
-	private Log log = LogFactory.getLog(this.getClass());
+	private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesProvider.class);
 
 	private Map<String, Properties> propertiesMap = new HashMap<String, Properties>();
 
@@ -49,10 +49,10 @@ public class PropertiesProvider {
 			inStream = new FileInputStream(file);
 			property = new Properties();
 			property.load(inStream);
-			propertiesMap.put(file, property);			
+			propertiesMap.put(file, property);
 		} catch (Exception e) {
-			log.error("Error while loading the property", e);
-		} 
+			LOGGER.error("Error while loading the property", e);
+		}
 	}
-	
+
 }
