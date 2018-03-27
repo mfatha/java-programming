@@ -14,9 +14,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -83,16 +80,16 @@ public class generateSSReviewReport extends UtilityService {
 						}
 					}
 				}else {
-					log.error("Soup Object is empty for: ("+ url +")" );
+					LOGGER.error("Soup Object is empty for: ("+ url +")" );
 					UtilityCache.getInstance().add(college, reviewList);
 					reviewList.clear();
 					synchronized (generateSSReviewReport.class) {
 						final Map<String, Object> cacheData = UtilityCache.getInstance().getEntireCache();
 						if(cacheData != null && cacheData.size() !=0) {
-							log.info("writing the fetched data into a json file...");
+							LOGGER.info("writing the fetched data into a json file...");
 							writeReviewJson();
 						}else {
-							log.info("no data to be written in json...");
+							LOGGER.info("no data to be written in json...");
 						}
 					}
 				}
@@ -258,7 +255,7 @@ public class generateSSReviewReport extends UtilityService {
 	public void sleep() {
 		if (WebSurfConstants.THREAD_SLEEP_ENABLED) {
 			try {
-				log.info("Thead sleeping for Undeduction. About ["+ WebSurfConstants.THREAD_SLEEP_DELAY +"] milliseconds");
+				LOGGER.info("Thead sleeping for Undeduction. About ["+ WebSurfConstants.THREAD_SLEEP_DELAY +"] milliseconds");
 				Thread.sleep(WebSurfConstants.THREAD_SLEEP_DELAY);
 			} catch (InterruptedException e) {
 				LOGGER.error("Error occured while sleep");
@@ -305,12 +302,12 @@ public class generateSSReviewReport extends UtilityService {
 				writeJson(outputFileName, reviewData);
 			}
 		} catch (Exception e) {
-			log.error("error while writing review as json", e);
+			LOGGER.error("error while writing review as json", e);
 		} finally {
 			UtilityCache.getInstance().clearCache();
 			JsoupServices.getInstance().clearConnections();
 			long mins = TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - start);
-			log.info("Total time taken for file writing : " + mins + " minutes for " + colleges + " colleges");
+			LOGGER.info("Total time taken for file writing : " + mins + " minutes for " + colleges + " colleges");
 		}
 	}
 	
@@ -325,9 +322,9 @@ public class generateSSReviewReport extends UtilityService {
 	private void writeAsFile(String filePath, String fileContent) {
 		try {
 			Files.write(Paths.get(filePath), fileContent.getBytes(), StandardOpenOption.CREATE);
-			log.debug("Finished writing the file : " + filePath);
+			LOGGER.debug("Finished writing the file : " + filePath);
 		} catch (IOException e) {
-			log.error("error while writing to file : " + filePath, e);
+			LOGGER.error("error while writing to file : " + filePath, e);
 		}
 	}
 	

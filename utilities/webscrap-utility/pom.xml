@@ -2,9 +2,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.munna.utilities</groupId>
-	<artifactId>websurfutility</artifactId>
+	<artifactId>websurf-utility</artifactId>
 	<version>0.1</version>
-	<name>websurfutility</name>
+	<name>websurf-utility</name>
 
 	<properties>
 		<jfx.version>1.5</jfx.version>
