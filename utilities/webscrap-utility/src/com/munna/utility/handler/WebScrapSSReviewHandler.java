@@ -61,7 +61,7 @@ public class WebScrapSSReviewHandler extends WebScrapHandler {
 		int count = 0;
 		try {
 			final Map<String, Object> cacheData = UtilityCache.getInstance().getEntireCache();
-			final Map<String, Object> reviewData = new HashMap<>();
+			final Map<String, Object> reviewData = new HashMap<String, Object>();
 			colleges = cacheData.size();
 			for (Entry<String, Object> review : cacheData.entrySet()) {
 				final List<Review> reviewList = (List<Review>) review.getValue();
