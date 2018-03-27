@@ -28,11 +28,11 @@
 				<includeModuleDirectory>false</includeModuleDirectory>
 				<fileSets>
 					<fileSet>
-						<outputDirectory>lib</outputDirectory>
+						<outputDirectory>.</outputDirectory>
 						<includes>
 							<include>**</include>
 						</includes>
-						<directory>lib</directory>
+						<directory>src/main/resources</directory>
 					</fileSet>
 				</fileSets>
 			</sources>
@@ -46,11 +46,11 @@
 				<includeModuleDirectory>false</includeModuleDirectory>
 				<fileSets>
 					<fileSet>
-						<outputDirectory>.</outputDirectory>
+						<outputDirectory>lib</outputDirectory>
 						<includes>
 							<include>**</include>
 						</includes>
-						<directory>src/main/resources</directory>
+						<directory>lib</directory>
 					</fileSet>
 				</fileSets>
 			</sources>
@@ -66,6 +66,11 @@
 		<file>
 			<source>../utilities/webscrap-utility/conf/config.properties</source>
 			<outputDirectory>./conf</outputDirectory>
+			<filtered>true</filtered>
+		</file>
+		<file>
+			<source>../utilities/utility-common/resource/log4j2.xml</source>
+			<outputDirectory>.</outputDirectory>
 			<filtered>true</filtered>
 		</file>
 	</files>
