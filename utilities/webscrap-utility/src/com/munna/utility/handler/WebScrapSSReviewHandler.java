@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import com.munna.common.cache.UtilityCache;
 import com.munna.utility.bean.Review;
 import com.munna.utility.cache.WebSurfConstants;
+import com.munna.utility.impl.CSVParserServices;
 import com.munna.utility.impl.JsoupServices;
 
 /**
@@ -53,6 +54,8 @@ public class WebScrapSSReviewHandler extends WebScrapHandler {
 	@SuppressWarnings("unchecked")
 	private void writeReviewJson() {
 		final String outputDirectory = WebSurfConstants.OUTPUT_FOLDER.concat("CollegesReview_shiksha");
+		CSVParserServices csvparser = new CSVParserServices();
+		csvparser.createDirectory(outputDirectory);
 		final String outputFileTemplate = outputDirectory.concat(java.io.File.separator).concat("college_review_");
 		final int limit = WebSurfConstants.ShikshaConstants.RECORD_LIMIT;
 		final long start = System.currentTimeMillis();

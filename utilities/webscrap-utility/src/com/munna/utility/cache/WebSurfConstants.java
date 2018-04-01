@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class WebSurfConstants {
 
-	public static final int THREAD_COUNT = 5;
+	public static final int THREAD_COUNT = 10;
 
 	public static final boolean THREAD_SLEEP_ENABLED = true;
 
@@ -69,7 +69,7 @@ public class WebSurfConstants {
 
 		public static final int TOTAL_PAGES_TO_CROWL = 814;
 
-		public static final int RECORD_LIMIT = 1000;
+		public static final int RECORD_LIMIT = 250;
 	}
 
 }
