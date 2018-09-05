@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.munna.common.cache.UtilityCache;
 import com.munna.common.service.api.UtilityService;
+import com.munna.utility.cache.WebSurfConstants;
 import com.munna.utility.impl.JsoupServices;
 
 public class generateCDReviewReport extends UtilityService {
@@ -88,5 +89,17 @@ public class generateCDReviewReport extends UtilityService {
 			JsoupServices.getInstance().closeConnection(scrapUrl);
 		}
 	}
+	
+	@Override
+	public void sleep() {
+		 if (WebSurfConstants.THREAD_SLEEP_ENABLED) {
+				try {
+					LOGGER.info("Thead sleeping for Undeduction. About ["+ WebSurfConstants.THREAD_SLEEP_DELAY +"] milliseconds");
+					Thread.sleep(WebSurfConstants.THREAD_SLEEP_DELAY);
+				} catch (InterruptedException e) {
+					LOGGER.error("Error occured while sleep");
+				}
+			}
+	 }
 
 }

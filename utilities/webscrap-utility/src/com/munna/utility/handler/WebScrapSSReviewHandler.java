@@ -24,8 +24,7 @@ import com.munna.utility.impl.JsoupServices;
 /**
  * The Class WebScrapSSReviewHandler.
  * 
- * TODO
- * 
+ s* 
  * Bypass shiksha.com bot check. Have to introduce wait between successive
  * requests.
  * 

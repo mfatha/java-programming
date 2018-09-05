@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import com.munna.common.properties.PropertiesProvider;
+
 /**
  * @author Mohammed Fathauddin
  * @since 2018
@@ -14,7 +16,7 @@ public class WebSurfConstants {
 
 	public static final boolean THREAD_SLEEP_ENABLED = true;
 
-	public static final long THREAD_SLEEP_DELAY = TimeUnit.MINUTES.toMillis(3);
+	public static final long THREAD_SLEEP_DELAY = TimeUnit.MINUTES.toMillis(2);
 
 	public static final int RETRY_COUNT = 5;
 
@@ -25,6 +27,8 @@ public class WebSurfConstants {
 	public static final String OUTPUT_FOLDER = USER_DIRECTORY.concat("output").concat(java.io.File.separator);
 
 	public static final String CONFIGURATION_FILE = CONF_FOLDER.concat("config.properties");
+	
+	public static final String SQL_QUERY_FILE = CONF_FOLDER.concat("sql.properties");
 
 	public static final class SoupUrls {
 
@@ -72,4 +76,26 @@ public class WebSurfConstants {
 		public static final int RECORD_LIMIT = 250;
 	}
 
+	public final static class DataBaseConstant {
+
+		public static final String DEFAULT_DB_CONNECTION = "DEFAULT";
+		
+		public static final String DB_CONFIGURATION_FILE = CONF_FOLDER.concat("db-config.properties");
+		
+	}
+	
+	public final static class SQLConstant {
+		
+		public static final String COLLEGE_LIST = "COLLEGE_LIST";
+
+		public static final String REVIEW_LIST = "REVIEW_LIST";
+		
+		public static final String REVIEW_DATA = "REVIEW_DATA";
+		
+		public static final String  COLLEGE_LIST_TABLE_QUERY = PropertiesProvider.getInstance().getProperties(WebSurfConstants.SQL_QUERY_FILE).getProperty(COLLEGE_LIST);
+		
+		public static final String  REVIEW_LIST_QUERY = PropertiesProvider.getInstance().getProperties(WebSurfConstants.SQL_QUERY_FILE).getProperty(REVIEW_LIST);
+		
+		public static final String  REVIEW_DATA_QUERY = PropertiesProvider.getInstance().getProperties(WebSurfConstants.SQL_QUERY_FILE).getProperty(REVIEW_DATA);
+	}
 }
