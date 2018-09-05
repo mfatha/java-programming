@@ -27,8 +27,7 @@ public class LoadDataToDumpHandler extends WebScrapHandler{
 		createTables();
 		LOGGER.info("Reading CSV files from College_list Folder..");
 		LOGGER.info("Reading CSV files from C360 Folder..");
-		fetchCSVFilesFromFolder(new File(WebSurfConstants.OUTPUT_FOLDER.concat("CollegesReview_c360")));
-		
+		fetchCSVFilesFromFolder(new File(WebSurfConstants.OUTPUT_FOLDER.concat("CollegesReview_c360")));		
 	}
 
 	private void createTables() {
@@ -52,7 +51,7 @@ public class LoadDataToDumpHandler extends WebScrapHandler{
 					fetchCSVFilesFromFolder(fileEntry);
 				} else {
 					if (getFileExtension(fileEntry).equalsIgnoreCase("csv")) {
-						synchronized (WebScrapHandler.class) {
+						synchronized (LoadDataToDumpHandler.class) {
 							readDataFromCSV(fileEntry);
 							toalNumberOfFiles++;
 						}
