@@ -27,7 +27,7 @@ public class LoadDataToDumpHandler extends WebScrapHandler{
 		createTables();
 		LOGGER.info("Reading CSV files from College_list Folder..");
 		LOGGER.info("Reading CSV files from C360 Folder..");
-		fetchCSVFilesFromFolder(new File(WebSurfConstants.OUTPUT_FOLDER.concat("CollegesReview_c360")));		
+		fetchCSVFilesFromFolder2(new File(WebSurfConstants.OUTPUT_FOLDER.concat("CollegesReview_c360")), 1);		
 	}
 
 	private void createTables() {
@@ -42,17 +42,17 @@ public class LoadDataToDumpHandler extends WebScrapHandler{
 		}
 	}
 
-	private void fetchCSVFilesFromFolder(File folder) {
+	private void fetchCSVFilesFromFolder2(File folder, int handleType) {
 		long start = System.currentTimeMillis();
 		long toalNumberOfFiles = 0L;
 		try {
 			for (final File fileEntry : folder.listFiles()) {
 				if (fileEntry.isDirectory()) {
-					fetchCSVFilesFromFolder(fileEntry);
+					fetchCSVFilesFromFolder2(fileEntry,handleType);
 				} else {
 					if (getFileExtension(fileEntry).equalsIgnoreCase("csv")) {
 						synchronized (LoadDataToDumpHandler.class) {
-							readDataFromCSV(fileEntry);
+							readDataFromCSV2(fileEntry,handleType);
 							toalNumberOfFiles++;
 						}
 					}
@@ -67,7 +67,7 @@ public class LoadDataToDumpHandler extends WebScrapHandler{
 		}
 	}
 
-	private void readDataFromCSV(File fileEntry) {
+	private void readDataFromCSV2(File fileEntry, int handleType) {
 		LOGGER.info("fetching Data for : " + fileEntry.getName());
 		long lineNumber = 1L;
 		CSVParser csvParser = new CSVParser();
@@ -93,7 +93,7 @@ public class LoadDataToDumpHandler extends WebScrapHandler{
 				}
 				if (rowData.size() > 0) {
 					try {
-						//batchInsertData();
+						insertDataIntoTable(rowData,handleType);
 					} catch (Exception e) {
 						LOGGER.error("Error occured", e);
 					} finally {
@@ -110,6 +110,10 @@ public class LoadDataToDumpHandler extends WebScrapHandler{
 			LOGGER.info("TIME TAKEN FOR FILE : " + fileEntry.getName() + " is : "
 					+ (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - start) + " minutes."));
 		}
+	}
+
+	private void insertDataIntoTable(ArrayList<String[]> rowData, int handleType) {
+		
 	}
 
 	@Override
