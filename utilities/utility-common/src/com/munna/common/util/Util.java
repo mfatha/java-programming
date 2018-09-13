@@ -12,4 +12,10 @@ public class Util {
 		return false;
 	}
 	
+	
+	public static boolean isNull(String string){
+		if(string == null || string.equalsIgnoreCase("null"))
+			return true;
+		return false;
+	}
 }

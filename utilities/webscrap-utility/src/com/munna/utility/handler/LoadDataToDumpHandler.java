@@ -3,6 +3,7 @@ package com.munna.utility.handler;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
@@ -93,13 +94,14 @@ public class LoadDataToDumpHandler extends WebScrapHandler{
 				}
 				if (rowData.size() > 0) {
 					try {
-						insertDataIntoTable(rowData,handleType);
+						if(handleType != 3){
+							insertDataIntoTable(rowData,handleType);
+						}						
 					} catch (Exception e) {
 						LOGGER.error("Error occured", e);
 					} finally {
-						
+						//TODO finish the code;
 					}
-
 				}
 			}
 
@@ -112,8 +114,24 @@ public class LoadDataToDumpHandler extends WebScrapHandler{
 		}
 	}
 
-	private void insertDataIntoTable(ArrayList<String[]> rowData, int handleType) {
-		
+	private void insertDataIntoTable(ArrayList<String[]> rowsData, int handleType) {
+		List<String> columnNames = getColumnNames(handleType);
+		if(!rowsData.isEmpty() && !columnNames.isEmpty()){
+			for(String[] rowData : rowsData ){
+				
+			}
+		}
+	}
+
+	private List<String> getColumnNames(int handleType) {
+		List<String> columnNames = new ArrayList<String>();
+		switch(handleType){
+			case 1: columnNames = WebSurfConstants.C360Constants.COLUMN_NAMES;
+					break;
+			case 2: columnNames = WebSurfConstants.CollegeDuniyaConstants.COLUMN_NAMES;
+					break;
+		}
+		return columnNames;
 	}
 
 	@Override

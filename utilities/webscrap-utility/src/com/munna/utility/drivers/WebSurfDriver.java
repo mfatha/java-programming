@@ -56,7 +56,7 @@ public class WebSurfDriver {
 								break;
 					case "6": 	webScrap = new WebScrapSSReviewHandler();
 								break;
-					case "7": 	loadDataToDump();
+					case "7": 	webScrap = loadDataToDump();
 								break;
 					default : 	LOGGER.error("Unknown option selection, Exiting Utility");
 					
@@ -78,7 +78,7 @@ public class WebSurfDriver {
 		}
 	}
 
-	private static void loadDataToDump() {
+	private static WebScrapHandler loadDataToDump() {
 		try {
 			LOGGER.info("Processing data load to Dump");			
 			//init database connection
@@ -87,11 +87,11 @@ public class WebSurfDriver {
 			LOGGER.info("DB connection initialized");			
 			//load data to the database
 			LoadDataToDumpHandler loadData = new LoadDataToDumpHandler();
-			loadData.startProcess();			
+			return loadData;		
 		}catch(Exception e) {
 			LOGGER.error("Process initialization failed, Unable to continue the process", e);
 		}
-		
+		return null;
 	}
 
 }
