@@ -12,7 +12,7 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.munna.common.db.connection.factory.DataSchemaCreator;
+import com.munna.common.db.connection.factory.DataSchemaManager;
 import com.munna.common.service.csvparser.CSVParser;
 import com.munna.common.util.Util;
 import com.munna.utility.cache.WebSurfConstants;
@@ -28,7 +28,7 @@ public class LoadDataToDumpHandler extends WebScrapHandler{
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(LoadDataToDumpHandler.class);
 	
-	DataSchemaCreator dataManager = new DataSchemaCreator();
+	DataSchemaManager dataManager = new DataSchemaManager();
 
 	public void startProcess() {
 		LOGGER.info("Create Table for data Insert");

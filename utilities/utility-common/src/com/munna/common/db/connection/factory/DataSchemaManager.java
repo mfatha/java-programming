@@ -12,23 +12,23 @@ import org.slf4j.LoggerFactory;
 
 import com.munna.common.util.Util;
 
-public class DataSchemaCreator {
+public class DataSchemaManager {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DataSchemaCreator.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DataSchemaManager.class);
 
 	private Connection connection = null;
 
 	private String tableName;
 
-	public DataSchemaCreator() {
+	public DataSchemaManager() {
 		this.connection = DatabaseConnectionFactory.getInstance().getConnection();
 	}
 
-	public DataSchemaCreator(Connection connection) {
+	public DataSchemaManager(Connection connection) {
 		this.connection = connection;
 	}
 
-	public DataSchemaCreator(Connection connection, String tableName) {
+	public DataSchemaManager(Connection connection, String tableName) {
 		this.connection = connection;
 		this.tableName = tableName;
 	}
@@ -104,5 +104,24 @@ public class DataSchemaCreator {
 	
 	public void updateColumnFamily(String tableName, Map<String,String> columnDataSchema) {
 		//TODOUpdate Column
+	}
+	
+	
+	
+	public ResultSet executeCommand(String query) throws Exception{
+		return executeCommand(this.connection, query);		
+	}
+
+	public ResultSet executeCommand(Connection connection, String query) throws Exception {
+		LOGGER.info("Entering into executeCommand method with query : "+ query);
+		ResultSet resultSet = null;
+		try {
+			Statement statement = connection.createStatement();
+			resultSet = statement.executeQuery(query);
+		}catch (Exception e) {
+			LOGGER.error("Unable to execute the query.. ", e);
+			throw new Exception(e!=null && e.getMessage() != null ? e.getMessage() : "Unable to execute the query.", e);
+		}
+		return resultSet;
 	}
 }
