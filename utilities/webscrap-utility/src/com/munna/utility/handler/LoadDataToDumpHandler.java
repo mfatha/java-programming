@@ -3,16 +3,23 @@ package com.munna.utility.handler;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.munna.common.db.connection.factory.DataManager;
+import com.munna.common.db.connection.factory.DataSchemaCreator;
 import com.munna.common.service.csvparser.CSVParser;
+import com.munna.common.util.Util;
 import com.munna.utility.cache.WebSurfConstants;
+import com.munna.utility.reviewer.C360ReviewerHandler;
+import com.munna.utility.reviewer.C360ReviwerHandler;
+import com.munna.utility.reviewer.CDuniaReviewerHandler;
+import com.munna.utility.reviewer.ReviewerHandler;
 import com.univocity.parsers.csv.CsvFormat;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
@@ -21,7 +28,7 @@ public class LoadDataToDumpHandler extends WebScrapHandler{
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(LoadDataToDumpHandler.class);
 	
-	DataManager dataManager = new DataManager();
+	DataSchemaCreator dataManager = new DataSchemaCreator();
 
 	public void startProcess() {
 		LOGGER.info("Create Table for data Insert");
@@ -32,14 +39,18 @@ public class LoadDataToDumpHandler extends WebScrapHandler{
 	}
 
 	private void createTables() {
-		if(!dataManager.isTableExist(WebSurfConstants.SQLConstant.COLLEGE_LIST)) {
-			dataManager.createTable(WebSurfConstants.SQLConstant.COLLEGE_LIST_TABLE_QUERY);
-		}
-		if(!dataManager.isTableExist(WebSurfConstants.SQLConstant.REVIEW_LIST)) {
-			dataManager.createTable(WebSurfConstants.SQLConstant.REVIEW_LIST_QUERY);
-		}
-		if(!dataManager.isTableExist(WebSurfConstants.SQLConstant.REVIEW_DATA)) {
-			dataManager.createTable(WebSurfConstants.SQLConstant.REVIEW_DATA_QUERY);
+		try {
+			if(!dataManager.isTableExist(WebSurfConstants.SQLConstant.COLLEGE_LIST)) {
+					dataManager.createTable(WebSurfConstants.SQLConstant.COLLEGE_LIST_TABLE_QUERY);
+			}
+			if(!dataManager.isTableExist(WebSurfConstants.SQLConstant.REVIEW_LIST)) {
+				dataManager.createTable(WebSurfConstants.SQLConstant.REVIEW_LIST_QUERY);
+			}
+			if(!dataManager.isTableExist(WebSurfConstants.SQLConstant.REVIEW_DATA)) {
+				dataManager.createTable(WebSurfConstants.SQLConstant.REVIEW_DATA_QUERY);
+			}
+		} catch (Exception e) {
+			LOGGER.error("Error occured :\n", e);
 		}
 	}
 
@@ -104,7 +115,6 @@ public class LoadDataToDumpHandler extends WebScrapHandler{
 					}
 				}
 			}
-
 		} catch (Exception e) {
 			LOGGER.error("Error throwed in readDataFromCSV method due to  : " + e);
 		} finally {
@@ -116,11 +126,33 @@ public class LoadDataToDumpHandler extends WebScrapHandler{
 
 	private void insertDataIntoTable(ArrayList<String[]> rowsData, int handleType) {
 		List<String> columnNames = getColumnNames(handleType);
+		Map<String,String> data = new HashMap<String,String>();
 		if(!rowsData.isEmpty() && !columnNames.isEmpty()){
 			for(String[] rowData : rowsData ){
-				
+				for(int i = 0;i<columnNames.size();i++) {
+					data.put(columnNames.get(i), rowData[i]);
+				}
+				LOGGER.debug(data.toString());
+				data = (Map<String, String>) checkDataExist(data,handleType);
+				if(data != null) {
+					//TODO add data Map to the List
+				}
 			}
 		}
+	}
+
+	private Object checkDataExist(Map<String, String> data, int handleType) {
+		data = Util.removeNoise(data); 
+		ReviewerHandler reviewer = null;
+		switch(handleType) {
+			case 1: reviewer = new C360ReviewerHandler();
+					break;
+			case 2: reviewer = new CDuniaReviewerHandler();
+					break;
+			/*case 3: reviewer = new SkishaReviewerHandler();
+					break;*/
+		}
+		return reviewer.checkDataExist(data);
 	}
 
 	private List<String> getColumnNames(int handleType) {
