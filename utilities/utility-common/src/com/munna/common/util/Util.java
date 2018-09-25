@@ -3,6 +3,8 @@ package com.munna.common.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONObject;
+
 import com.munna.common.cache.UtilityConstants;
 
 /**
@@ -22,6 +24,12 @@ public class Util {
 			return true;
 		return false;
 	}
+	
+	public static Boolean jsonHasElement(JSONObject resultSet, String key) {
+		if(resultSet!= null && resultSet.has(key) && resultSet.get(key)!= null)
+			return true;
+		return false;
+	}
 
 	private static String removeNoise(String value) {
 		Map<String,String> noises = UtilityConstants.UtilConstant.NOISES;
@@ -38,5 +46,5 @@ public class Util {
 		}
 		return resultSet;
 	}
-
+	
 }
