@@ -151,7 +151,7 @@ public class LoadDataToDumpHandler extends WebScrapHandler{
 			/*case 3: reviewer = new SkishaReviewerHandler();
 					break;*/
 		}
-		return reviewer.checkDataExist(data);
+		return reviewer.process(data);
 	}
 
 	private List<String> getColumnNames(int handleType) {
