@@ -8,6 +8,7 @@
 	<properties>
 		<jfx.version>1.5</jfx.version>
 		<jsoup.version>1.8.3</jsoup.version>
+		<apache.client.version>4.3.6</apache.client.version>
 	</properties>
 	
 	<dependencies>
@@ -25,6 +26,12 @@
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20160810</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpclient</artifactId>
+		    <version>${apache.client.version}</version>
 		</dependency>
 	</dependencies>
 

@@ -59,6 +59,7 @@ public class InstagramConnectionFactory {
 			}
 			Instagram4j connection = Instagram4j.builder().username(username).password(password).build();
 			connection.setup();
+			connection.login();
 			connectionMap.put(connectionName, connection);
 		} catch (Exception e) {
 			LOGGER.error("Error occurred while creating the connection", e);
