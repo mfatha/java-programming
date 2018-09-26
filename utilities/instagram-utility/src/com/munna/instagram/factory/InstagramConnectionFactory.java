@@ -7,13 +7,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.brunocvcunha.instagram4j.Instagram4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.munna.common.cache.UtilityConstants;
-import com.munna.common.db.connection.factory.DatabaseConnectionFactory;
 import com.munna.instagram.constants.InstaConstants;
-import com.munna.instagram.drivers.InstagramDriver;
 
 public class InstagramConnectionFactory {
 	
@@ -61,7 +59,6 @@ public class InstagramConnectionFactory {
 			}
 			Instagram4j connection = Instagram4j.builder().username(username).password(password).build();
 			connection.setup();
-			connection.login();
 			connectionMap.put(connectionName, connection);
 		} catch (Exception e) {
 			LOGGER.error("Error occurred while creating the connection", e);
@@ -83,9 +80,8 @@ public class InstagramConnectionFactory {
 
 	public void closeConnection(String connectionName) {
 		try {
-			connectionMap.get(connectionName).close();
 			connectionMap.remove(connectionName);
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			LOGGER.error("Error occurred while closing the connection", e);
 		}
 	}

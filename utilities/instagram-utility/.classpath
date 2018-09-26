@@ -16,5 +16,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/MohammedFathauddin/Downloads/instagram4j-1.7.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
