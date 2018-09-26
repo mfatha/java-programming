@@ -10,8 +10,8 @@ public class CDuniaReviewerHandler extends ReviewerHandler{
 	private static final Logger LOGGER = LoggerFactory.getLogger(CDuniaReviewerHandler.class);
 	
 	@Override
-	public Map<String, String> checkDataExist(Map<String, String> dataMap) {
-		return super.checkDataExist(dataMap);
+	public Map<String, String> process(Map<String, String> dataMap) {
+		return super.process(dataMap);
 	}
 	
 }
