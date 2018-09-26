@@ -43,12 +43,11 @@ public class C360ReviewerHandler extends ReviewerHandler {
 					for(int i = 0 ; i < reviewers.length() ; i++) {
 						if(reviewers.getJSONObject(i).getString("REVIEW_IN_SOURCE_ID").equalsIgnoreCase("1")) {
 							return true;
-							break;
 						}
 					}
-				}else
+				}else{
 					//TODO insert new element into reviewer list table
-					
+				}	
 			}else {
 				//TODO insert data into college_list, reviewer_list
 			}
