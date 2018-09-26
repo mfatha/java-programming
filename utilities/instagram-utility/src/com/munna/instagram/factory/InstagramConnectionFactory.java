@@ -43,8 +43,8 @@ public class InstagramConnectionFactory {
 		try (InputStream iStream = new FileInputStream(configFile)) {
 			Properties properties = new Properties();
 			properties.load(iStream);
-			String username = properties.getProperty("USERNAME");
-			String password = properties.getProperty("PASSWORD");
+			String username = properties.getProperty(InstaConstants.AuthenticationConstant.USERNAME);
+			String password = properties.getProperty(InstaConstants.AuthenticationConstant.PASSWORD);
 			InstagramConnectionFactory.getInstance().initializeConnection(connectionName, username, password);
 		} catch (Exception e) {
 			LOGGER.error("Error occured while initializinng the database connection for ".concat(connectionName), e);

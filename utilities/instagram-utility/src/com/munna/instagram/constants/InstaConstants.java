@@ -2,6 +2,8 @@ package com.munna.instagram.constants;
 
 import java.util.concurrent.TimeUnit;
 
+import com.munna.common.properties.PropertiesProvider;
+
 
 /**
  * @author Mohammed Fathauddin
@@ -24,9 +26,19 @@ public class InstaConstants {
 	public static final String OUTPUT_FOLDER = USER_DIRECTORY.concat("output").concat(java.io.File.separator);
 
 	public static final String CONFIGURATION_FILE = CONF_FOLDER.concat("config.properties");
-	
-	public static final String SQL_QUERY_FILE = CONF_FOLDER.concat("sql.properties");
 
 	public static final String DEFAULT_IG_CONNECTION = "DEFAULT";
+	
+	public final static class AuthenticationConstant {
+		
+		public static final String USERNAME = "USERNAME";
+		
+		public static final String PASSWORD = "PASSWORD";
+		
+		public static final String IG_USERNAME = PropertiesProvider.getInstance().getProperties(InstaConstants.CONFIGURATION_FILE).getProperty(USERNAME);
+		
+		public static final String IG_PASSWORD = PropertiesProvider.getInstance().getProperties(InstaConstants.CONFIGURATION_FILE).getProperty(PASSWORD);
+		
+	}
 
 }
