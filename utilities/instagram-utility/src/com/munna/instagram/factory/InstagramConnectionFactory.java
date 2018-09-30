@@ -43,21 +43,21 @@ public class InstagramConnectionFactory {
 		try (InputStream iStream = new FileInputStream(configFile)) {
 			Properties properties = new Properties();
 			properties.load(iStream);
-			String username = properties.getProperty(InstaConstants.AuthenticationConstant.USERNAME);
+			String mailId = properties.getProperty(InstaConstants.AuthenticationConstant.EMAIL);
 			String password = properties.getProperty(InstaConstants.AuthenticationConstant.PASSWORD);
-			InstagramConnectionFactory.getInstance().initializeConnection(connectionName, username, password);
+			InstagramConnectionFactory.getInstance().initializeConnection(connectionName, mailId, password);
 		} catch (Exception e) {
 			LOGGER.error("Error occured while initializinng the database connection for ".concat(connectionName), e);
 			throw new Exception(e.getMessage(), e);
 		}
 	}
 
-	private void initializeConnection(String connectionName, String username, String password) throws Exception{
+	private void initializeConnection(String connectionName, String mailId, String password) throws Exception{
 		try {
 			if (connectionMap.containsKey(connectionName)) {
 				closeConnection(connectionName);
 			}
-			Instagram4j connection = Instagram4j.builder().username(username).password(password).build();
+			Instagram4j connection = Instagram4j.builder().username(mailId).password(password).build();
 			connection.setup();
 			connection.login();
 			connectionMap.put(connectionName, connection);
@@ -72,7 +72,9 @@ public class InstagramConnectionFactory {
 	}
 
 	public Instagram4j getConnection(String connectionName) {
-		return connectionMap.get(connectionName);
+		if(connectionMap.containsKey(connectionName))
+			return connectionMap.get(connectionName);
+		else return null;
 	}
 
 	public void closeConnection() {

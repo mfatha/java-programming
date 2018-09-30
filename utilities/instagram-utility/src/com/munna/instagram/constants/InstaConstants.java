@@ -15,7 +15,7 @@ public class InstaConstants {
 
 	public static final boolean THREAD_SLEEP_ENABLED = true;
 
-	public static final long THREAD_SLEEP_DELAY = TimeUnit.MINUTES.toMillis(2);
+	public static final long THREAD_SLEEP_DELAY = TimeUnit.MINUTES.toMillis(3);
 
 	public static final int RETRY_COUNT = 5;	
 
@@ -33,11 +33,19 @@ public class InstaConstants {
 		
 		public static final String USERNAME = "USERNAME";
 		
+		public static final String EMAIL = "EMAIL";
+		
 		public static final String PASSWORD = "PASSWORD";
+		
+		public static final String STOP_PROCESS = "STOP_PROCESS";
 		
 		public static final String IG_USERNAME = PropertiesProvider.getInstance().getProperties(InstaConstants.CONFIGURATION_FILE).getProperty(USERNAME);
 		
+		public static final String IG_EMAIL = PropertiesProvider.getInstance().getProperties(InstaConstants.CONFIGURATION_FILE).getProperty(EMAIL);
+		
 		public static final String IG_PASSWORD = PropertiesProvider.getInstance().getProperties(InstaConstants.CONFIGURATION_FILE).getProperty(PASSWORD);
+		
+		public static final Boolean IG_STOP_PROCESS = Boolean.parseBoolean(PropertiesProvider.getInstance().getProperties(InstaConstants.CONFIGURATION_FILE).getProperty(STOP_PROCESS));
 		
 	}
 
