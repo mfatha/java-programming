@@ -1,7 +1,9 @@
 package com.munna.utility.cache;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import com.munna.common.properties.PropertiesProvider;
@@ -50,6 +52,18 @@ public class WebSurfConstants {
 				"Review Url", "All", "Current Student", "Alumni", "Other", "Excellent", "Very Good", "Good", "Average",
 				"Poor", "College Infrastructure", "Campus placement", "Industry Exposure", "Faculty", "College Life",
 				"Hostel", "Student Crowd", "Affordability", "Postive Recommendations", "Negative Recommendations" });
+		
+		public static final Map<String, Integer> REVIEW_WEIGHT = createMap();
+		    private static Map<String, Integer> createMap()
+		    {
+		        Map<String,Integer> REVIEW_WEIGHT = new HashMap<String,Integer>();
+		        REVIEW_WEIGHT.put("Excellent", 5);
+		        REVIEW_WEIGHT.put("Very Good", 4);
+		        REVIEW_WEIGHT.put("Good", 3);
+		        REVIEW_WEIGHT.put("Average", 2);
+		        REVIEW_WEIGHT.put("Poor", 1);
+		        return REVIEW_WEIGHT;
+		    }
 
 		public static final int TOTAL_PAGES_TO_CROWL = 210;
 

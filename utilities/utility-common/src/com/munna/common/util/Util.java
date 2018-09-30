@@ -19,8 +19,13 @@ public class Util {
 		return false;
 	}
 
+	
+	public static boolean isNull(long rWeight) {
+		return isNull(Long.toString(rWeight));
+	}
+	
 	public static boolean isNull(String string) {
-		if (string == null || string.equalsIgnoreCase("null"))
+		if (string == null || string.equalsIgnoreCase("null") || string.equalsIgnoreCase("0"))
 			return true;
 		return false;
 	}

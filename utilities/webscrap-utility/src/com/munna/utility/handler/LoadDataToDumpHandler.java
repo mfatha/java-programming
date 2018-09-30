@@ -123,6 +123,7 @@ public class LoadDataToDumpHandler extends WebScrapHandler{
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void insertDataIntoTable(ArrayList<String[]> rowsData, int handleType) {
 		List<String> columnNames = getColumnNames(handleType);
 		Map<String,String> data = new HashMap<String,String>();
@@ -132,9 +133,16 @@ public class LoadDataToDumpHandler extends WebScrapHandler{
 					data.put(columnNames.get(i), rowData[i]);
 				}
 				LOGGER.debug(data.toString());
+				//check data present in table and organize the data..
 				data = (Map<String, String>) checkDataExist(data,handleType);
-				if(data != null) {
-					//TODO add data Map to the List
+				if(!data.isEmpty()) {
+					if(data.containsValue("COLLEGE_REVIEWER_PRESENT_IN_LIST") && Boolean.parseBoolean(data.get("COLLEGE_REVIEWER_PRESENT_IN_LIST"))) {
+						//TODO Update in review_data table
+					}else if(data.containsValue("COLLEGE_PRESENT_IN_LIST") && Boolean.parseBoolean(data.get("COLLEGE_PRESENT_IN_LIST"))) {
+						//TODO Insert into reviewer list table and add review_data table
+					}else {
+						//create new record in college_list table
+					}
 				}
 			}
 		}
