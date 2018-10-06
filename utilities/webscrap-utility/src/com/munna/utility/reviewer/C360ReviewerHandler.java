@@ -57,9 +57,10 @@ public class C360ReviewerHandler extends ReviewerHandler {
 	public JSONObject getCollegeDetails(Map<String, String> dataMap) {
 		DataSchemaManager dataManager = new DataSchemaManager();
 		if (dataManager.isTableExist(WebSurfConstants.SQLConstant.COLLEGE_LIST)) {
-			collegeListDataSchemaMap.put("COLLEGE_NAME",
-					(dataMap.containsKey("College Name") && !Util.isNull(dataMap.get("College Name")))
-							? dataMap.get("College Name") : null);
+			if(dataMap.containsKey("College Name") && !Util.isNull(dataMap.get("College Name"))) {
+				String collegeName = dataMap.get("College Name").split(",")[0];
+				collegeListDataSchemaMap.put("COLLEGE_NAME",(!Util.isEmpty(collegeName))? collegeName : null);
+			}			
 			collegeListDataSchemaMap.put("REVIEW_IN_SOURCE_ID", "1");
 			collegeListDataSchemaMap.put("SITE_URL",
 					(dataMap.containsKey("Review Url") && !Util.isNull(dataMap.get("Review Url")))
@@ -68,7 +69,7 @@ public class C360ReviewerHandler extends ReviewerHandler {
 			if(dataMap.containsKey("All") && !Util.isNull(dataMap.get("All"))) {
 				collegeListDataSchemaMap.put("TOTAL_REVIEWER",(dataMap.containsKey("All") && !Util.isNull(dataMap.get("All")))? dataMap.get("All") : null);
 				String[] ReviewWeight = {"Excellent", "Very Good", "Good", "Average","Poor"};
-				long rWeight = 0L;
+				double rWeight = 0L;
 				for(String weight : ReviewWeight){
 					if(dataMap.containsKey(weight) && !Util.isNull(dataMap.get(weight))) {
 						rWeight += Long.parseLong(dataMap.get(weight))*WebSurfConstants.C360Constants.REVIEW_WEIGHT.get(weight);
@@ -76,8 +77,8 @@ public class C360ReviewerHandler extends ReviewerHandler {
 				}
 				rWeight = rWeight/Long.parseLong(dataMap.get("All"));
 				DecimalFormat f = new DecimalFormat("##.00");
-				rWeight = Long.parseLong(f.format(rWeight));
-				collegeListDataSchemaMap.put("REVIEWER_RATING",(!Util.isNull(rWeight))? Long.toString(rWeight) : null);
+				rWeight = Double.parseDouble(f.format(rWeight));
+				collegeListDataSchemaMap.put("REVIEWER_RATING",(!Util.isNull(rWeight))? Double.toString(rWeight) : null);
 			}
 			collegeListDataSchemaMap.put("INFRASTRUCTURE",(dataMap.containsKey("College Infrastructure") && !Util.isNull(dataMap.get("College Infrastructure")))? dataMap.get("College Infrastructure") : null);
 			collegeListDataSchemaMap.put("PLACEMENT",(dataMap.containsKey("Campus placement") && !Util.isNull(dataMap.get("Campus placement")))? dataMap.get("Campus placement") : null);

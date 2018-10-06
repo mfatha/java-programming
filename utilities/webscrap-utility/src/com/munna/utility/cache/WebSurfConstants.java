@@ -75,7 +75,7 @@ public class WebSurfConstants {
 
 		public static final List<String> COLUMN_NAMES = Arrays
 				.asList(new String[] { "college_name", "home_url", "review_url", "total_reviewers", "over_all_rating",
-						"infrastructure", "academic", "placements", "faculty", "accommodation", "social" });
+						"infrastructure", "academic", "placements", "faculty", "accommodation", "" });
 
 		public static final int TOTAL_PAGES_TO_CROWL = 1487;
 
@@ -111,5 +111,7 @@ public class WebSurfConstants {
 		public static final String  REVIEW_LIST_QUERY = PropertiesProvider.getInstance().getProperties(WebSurfConstants.SQL_QUERY_FILE).getProperty(REVIEW_LIST);
 		
 		public static final String  REVIEW_DATA_QUERY = PropertiesProvider.getInstance().getProperties(WebSurfConstants.SQL_QUERY_FILE).getProperty(REVIEW_DATA);
+		
+		public static final String[] REVIEW_DATA_NAMES = {"INFRASTRUCTURE","PLACEMENT","INDUSTRY_EXPOSURE","FACULTY","COLLEGE_LIFE","HOSTEL_LIFE","SOCIAL","RECOMMENDATIONS"};
 	}
 }

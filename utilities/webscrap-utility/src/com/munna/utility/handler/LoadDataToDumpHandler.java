@@ -2,6 +2,7 @@ package com.munna.utility.handler;
 
 import java.io.File;
 import java.io.InputStream;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +10,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +37,7 @@ public class LoadDataToDumpHandler extends WebScrapHandler{
 		createTables();
 		LOGGER.info("Reading CSV files from College_list Folder..");
 		LOGGER.info("Reading CSV files from C360 Folder..");
-		fetchCSVFilesFromFolder2(new File(WebSurfConstants.OUTPUT_FOLDER.concat("CollegesReview_c360")), 1);		
+		fetchCSVFilesFromFolder(new File(WebSurfConstants.OUTPUT_FOLDER.concat("CollegesReview_c360")), 1);		
 	}
 
 	private void createTables() {
@@ -52,18 +55,19 @@ public class LoadDataToDumpHandler extends WebScrapHandler{
 			LOGGER.error("Error occured :\n", e);
 		}
 	}
-
-	private void fetchCSVFilesFromFolder2(File folder, int handleType) {
+	
+	@Override
+	protected void fetchCSVFilesFromFolder(File folder, int handleType) {
 		long start = System.currentTimeMillis();
 		long toalNumberOfFiles = 0L;
 		try {
 			for (final File fileEntry : folder.listFiles()) {
 				if (fileEntry.isDirectory()) {
-					fetchCSVFilesFromFolder2(fileEntry,handleType);
+					fetchCSVFilesFromFolder(fileEntry,handleType);
 				} else {
 					if (getFileExtension(fileEntry).equalsIgnoreCase("csv")) {
 						synchronized (LoadDataToDumpHandler.class) {
-							readDataFromCSV2(fileEntry,handleType);
+							readDataFromCSV(fileEntry,handleType);
 							toalNumberOfFiles++;
 						}
 					}
@@ -78,7 +82,7 @@ public class LoadDataToDumpHandler extends WebScrapHandler{
 		}
 	}
 
-	private void readDataFromCSV2(File fileEntry, int handleType) {
+	private void readDataFromCSV(File fileEntry, int handleType) {
 		LOGGER.info("fetching Data for : " + fileEntry.getName());
 		long lineNumber = 1L;
 		CSVParser csvParser = new CSVParser();
@@ -126,26 +130,112 @@ public class LoadDataToDumpHandler extends WebScrapHandler{
 	@SuppressWarnings("unchecked")
 	private void insertDataIntoTable(ArrayList<String[]> rowsData, int handleType) {
 		List<String> columnNames = getColumnNames(handleType);
-		Map<String,String> data = new HashMap<String,String>();
+		Map<String,String> collegeListDataSchemaMap = new HashMap<String,String>();
 		if(!rowsData.isEmpty() && !columnNames.isEmpty()){
 			for(String[] rowData : rowsData ){
 				for(int i = 0;i<columnNames.size();i++) {
-					data.put(columnNames.get(i), rowData[i]);
+					collegeListDataSchemaMap.put(columnNames.get(i), rowData[i]);
 				}
-				LOGGER.debug(data.toString());
+				LOGGER.debug(collegeListDataSchemaMap.toString());
 				//check data present in table and organize the data..
-				data = (Map<String, String>) checkDataExist(data,handleType);
-				if(!data.isEmpty()) {
-					if(data.containsValue("COLLEGE_REVIEWER_PRESENT_IN_LIST") && Boolean.parseBoolean(data.get("COLLEGE_REVIEWER_PRESENT_IN_LIST"))) {
+				collegeListDataSchemaMap = (Map<String, String>) checkDataExist(collegeListDataSchemaMap,handleType);
+				if(!collegeListDataSchemaMap.isEmpty()) {
+					if(collegeListDataSchemaMap.containsKey("COLLEGE_REVIEWER_PRESENT_IN_LIST") && Boolean.parseBoolean(collegeListDataSchemaMap.get("COLLEGE_REVIEWER_PRESENT_IN_LIST"))) {
 						//TODO Update in review_data table
-					}else if(data.containsValue("COLLEGE_PRESENT_IN_LIST") && Boolean.parseBoolean(data.get("COLLEGE_PRESENT_IN_LIST"))) {
-						//TODO Insert into reviewer list table and add review_data table
+					}else if(collegeListDataSchemaMap.containsKey("COLLEGE_PRESENT_IN_LIST") && Boolean.parseBoolean(collegeListDataSchemaMap.get("COLLEGE_PRESENT_IN_LIST"))) {
+						//TODO Insert into reviewer list table and add review_data table						
 					}else {
-						//create new record in college_list table
+						//TODO create CollegeLIST
+						insertIntoCollegeList(collegeListDataSchemaMap);
+						if(!collegeListDataSchemaMap.containsKey("COLLEGE_ID")) {
+							collegeListDataSchemaMap.put("COLLEGE_ID", getCollegeIdFromName(collegeListDataSchemaMap.get("COLLEGE_NAME")));
+						}
+						//TODO create CollegeREVIEWLIST
+						insertIntoReviewList(collegeListDataSchemaMap);
+						if(!collegeListDataSchemaMap.containsKey("REVIEW_TO_ID")) {
+							collegeListDataSchemaMap.put("REVIEW_TO_ID", getReviewId(collegeListDataSchemaMap.get("COLLEGE_ID"), collegeListDataSchemaMap.get("REVIEW_IN_SOURCE_ID")));
+						}
+						//TODO create ReviewDATA
+						insertIntoReviewData(collegeListDataSchemaMap);
+						LOGGER.info("INSERTED DATA FOR "+ collegeListDataSchemaMap);
 					}
 				}
 			}
 		}
+	}
+
+	private void insertIntoCollegeList(Map<String, String> collegeListDataSchemaMap) {
+		DataSchemaManager dataManager = new DataSchemaManager();
+		//statement.executeUpdate("INSERT INTO Customers " + "VALUES (1001, 'Simpson', 'Mr.', 'Springfield', 2001)");
+		String query =  "INSERT INTO college_list (COLLEGE_NAME) VALUES ('"+collegeListDataSchemaMap.get("COLLEGE_NAME")+"')";
+		try {
+			dataManager.executeUpdate(query);
+		} catch (Exception e) {
+			LOGGER.error("Error in execting query : " + e);
+		}
+	}
+	
+	private void insertIntoReviewList(Map<String, String> collegeListDataSchemaMap) {
+		DataSchemaManager dataManager = new DataSchemaManager();
+		//INSERT newtable (user,age,os) SELECT table1.user,table1.age,table2.os FROM table1,table2 WHERE table1.user=table2.user;
+		if(collegeListDataSchemaMap.containsKey("COLLEGE_ID") && collegeListDataSchemaMap.get("COLLEGE_ID") != null) {
+			String query =  "INSERT INTO review_list (COLLEGE_ID, REVIEW_IN_SOURCE_ID, SITE_URL ) VALUES ("+collegeListDataSchemaMap.get("COLLEGE_ID")+", "+collegeListDataSchemaMap.get("REVIEW_IN_SOURCE_ID")+", '"+collegeListDataSchemaMap.get("SITE_URL")+"')";
+			try {
+				dataManager.executeUpdate(query);
+			} catch (Exception e) {
+				LOGGER.error("Error in execting query : " + e);
+			}
+		}else {
+			LOGGER.error("NO COLLEGE DETAILS FOUND...");
+		}
+	}
+	
+	private void insertIntoReviewData(Map<String, String> collegeListDataSchemaMap) {
+		DataSchemaManager dataManager = new DataSchemaManager();
+		if(collegeListDataSchemaMap.containsKey("REVIEW_TO_ID") && collegeListDataSchemaMap.get("REVIEW_TO_ID") != null) {
+			for(String review : WebSurfConstants.SQLConstant.REVIEW_DATA_NAMES) {
+				if(collegeListDataSchemaMap.containsKey(review) && collegeListDataSchemaMap.get(review)!= null) {
+					String query =  "INSERT INTO review_data (REVIEW_ID, REVIEW_NAME, VALUE ) VALUES ( "+collegeListDataSchemaMap.get("REVIEW_TO_ID")+", '"+review+"', '"+collegeListDataSchemaMap.get(review)+"')";
+					try {
+						dataManager.executeUpdate(query);
+					} catch (Exception e) {
+						LOGGER.error("Error in execting query : " + e);
+					}
+				}			
+			}
+		}else {
+			LOGGER.error("NO REVIEWER DETAILS FOUND...");
+		}
+	}
+	
+	private String getCollegeIdFromName(String collegeName) {
+		DataSchemaManager dataManager = new DataSchemaManager();
+		String query =  "SELECT ID FROM college_list WHERE COLLEGE_NAME LIKE ('"+collegeName+"')";
+		String id = null;
+		try {
+			ResultSet resultSet = dataManager.executeCommand(query);
+			while(resultSet.next()) {
+				id = resultSet.getString("ID");
+			}
+		} catch (Exception e) {
+			LOGGER.error("Error in execting query : " + e);
+		}
+		return id;
+	}
+	
+	private String getReviewId(String collegeId, String reviewerId) {
+		DataSchemaManager dataManager = new DataSchemaManager();
+		String query =  "SELECT ID FROM review_list WHERE COLLEGE_ID = "+collegeId+" AND REVIEW_IN_SOURCE_ID = "+reviewerId;
+		String id = null;
+		try {
+			ResultSet resultSet = dataManager.executeCommand(query);
+			while(resultSet.next()) {
+				id = resultSet.getString("ID");
+			}
+		} catch (Exception e) {
+			LOGGER.error("Error in execting query : " + e);
+		}
+		return id;
 	}
 
 	private Object checkDataExist(Map<String, String> data, int handleType) {
