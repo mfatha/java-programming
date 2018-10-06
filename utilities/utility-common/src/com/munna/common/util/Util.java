@@ -24,6 +24,10 @@ public class Util {
 		return isNull(Long.toString(rWeight));
 	}
 	
+	public static boolean isNull(double rWeight) {
+		return isNull(Double.toString(rWeight));
+	}
+	
 	public static boolean isNull(String string) {
 		if (string == null || string.equalsIgnoreCase("null") || string.equalsIgnoreCase("0"))
 			return true;
@@ -38,8 +42,10 @@ public class Util {
 
 	private static String removeNoise(String value) {
 		Map<String,String> noises = UtilityConstants.UtilConstant.NOISES;
-		for (Map.Entry<String, String> noise : noises.entrySet()) {
-			value = value.replace(noise.getKey(), noise.getValue());//(noise.getKey(), noise.getValue());
+		if(value != null) {
+			for (Map.Entry<String, String> noise : noises.entrySet()) {
+				value = value.replace(noise.getKey(), noise.getValue());
+			}
 		}
 		return value;
 	}

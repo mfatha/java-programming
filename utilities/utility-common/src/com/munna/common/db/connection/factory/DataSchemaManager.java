@@ -111,6 +111,10 @@ public class DataSchemaManager {
 	public ResultSet executeCommand(String query) throws Exception{
 		return executeCommand(this.connection, query);		
 	}
+	
+	public int executeUpdate(String query) throws Exception{
+		return executeUpdate(this.connection, query);		
+	}
 
 	public ResultSet executeCommand(Connection connection, String query) throws Exception {
 		LOGGER.info("Entering into executeCommand method with query : "+ query);
@@ -118,6 +122,19 @@ public class DataSchemaManager {
 		try {
 			Statement statement = connection.createStatement();
 			resultSet = statement.executeQuery(query);
+		}catch (Exception e) {
+			LOGGER.error("Unable to execute the query.. ", e);
+			throw new Exception(e!=null && e.getMessage() != null ? e.getMessage() : "Unable to execute the query.", e);
+		}
+		return resultSet;
+	}
+	
+	public int executeUpdate(Connection connection, String query) throws Exception {
+		LOGGER.info("Entering into executeCommand method with query : "+ query);
+		int resultSet = 0;
+		try {
+			Statement statement = connection.createStatement();
+			resultSet = statement.executeUpdate(query);
 		}catch (Exception e) {
 			LOGGER.error("Unable to execute the query.. ", e);
 			throw new Exception(e!=null && e.getMessage() != null ? e.getMessage() : "Unable to execute the query.", e);

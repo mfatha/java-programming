@@ -19,6 +19,7 @@ public class UtilityConstants {
 		public static final Map<String,String> NOISES = new HashMap<String,String>();
 		static {
 			NOISES.put("[comma]", ",");
+			NOISES.put("'", "");
 	    }
 	}
 	
