@@ -15,7 +15,7 @@ public class InstaConstants {
 
 	public static final boolean THREAD_SLEEP_ENABLED = true;
 
-	public static final long THREAD_SLEEP_DELAY = TimeUnit.MINUTES.toMillis(3);
+	public static final long THREAD_SLEEP_DELAY = TimeUnit.MINUTES.toMillis(1);
 
 	public static final int RETRY_COUNT = 5;	
 
@@ -39,7 +39,15 @@ public class InstaConstants {
 		
 		public static final String STOP_PROCESS = "STOP_PROCESS";
 		
+		public static final String HASHTAG = "FEED_TAGS";
+
+		public static final String FIXEDCOUNT = "FOLLOWEING_COUNTS";
+		
 		public static final String IG_USERNAME = PropertiesProvider.getInstance().getProperties(InstaConstants.CONFIGURATION_FILE).getProperty(USERNAME);
+		
+		public static final String HASH_TAGS = PropertiesProvider.getInstance().getProperties(InstaConstants.CONFIGURATION_FILE).getProperty(HASHTAG);
+		
+		public static final String FIXED_COUNT = PropertiesProvider.getInstance().getProperties(InstaConstants.CONFIGURATION_FILE).getProperty(FIXEDCOUNT);
 		
 		public static final String IG_EMAIL = PropertiesProvider.getInstance().getProperties(InstaConstants.CONFIGURATION_FILE).getProperty(EMAIL);
 		
