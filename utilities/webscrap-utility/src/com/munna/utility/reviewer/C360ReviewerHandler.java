@@ -25,7 +25,6 @@ public class C360ReviewerHandler extends ReviewerHandler {
 	@Override
 	public Map<String, String> process(Map<String, String> dataMap) {
 		JSONObject collegeDetails = getCollegeDetails(dataMap);
-		Boolean reviewerPresent = false;
 		if(collegeDetails != null){
 			if (Util.jsonHasElement(collegeDetails, "COLLEGE_NAME")) {
 				JSONArray reviewers = new JSONArray();
@@ -35,7 +34,6 @@ public class C360ReviewerHandler extends ReviewerHandler {
 						if (reviewers.getJSONObject(i).getString("REVIEW_IN_SOURCE_ID").equalsIgnoreCase("1")) {
 							LOGGER.info("C360 review is present for College ( " + collegeListDataSchemaMap.get("COLLEGE_NAME")
 									+ " ) and data exist in table...");
-							reviewerPresent = true;
 						}
 					}
 				} else {
@@ -47,9 +45,7 @@ public class C360ReviewerHandler extends ReviewerHandler {
 				LOGGER.error("College ( " + dataMap.containsKey("College Name") + " ) does not exist in table...");
 			}
 		}
-		if(reviewerPresent){
-			collegeListDataSchemaMap.put("COLLEGE_REVIEWER_PRESENT_IN_LIST","true");
-		}
+		collegeListDataSchemaMap.put("RESULT_JSON", collegeDetails.toString());
 		return collegeListDataSchemaMap;
 	}
 

@@ -77,7 +77,8 @@ public abstract class ReviewerHandler {
 			ResultSet resultSet = dataManager.executeCommand(query);
 			jsonResult = new JSONObject();
 			while(resultSet.next()) {				
-				jsonResult.put(resultSet.getString("REVIEW_NAME"), resultSet.getString("VALUE"));				
+				if(resultSet.getString("VALUE") != null)
+					jsonResult.put(resultSet.getString("REVIEW_NAME"), resultSet.getString("VALUE"));				
 			}
 		} catch (Exception e) {
 			LOGGER.error("Error in execting query : " + e);

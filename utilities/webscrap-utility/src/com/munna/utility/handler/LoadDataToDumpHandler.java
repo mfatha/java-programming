@@ -140,7 +140,7 @@ public class LoadDataToDumpHandler extends WebScrapHandler{
 				//check data present in table and organize the data..
 				collegeListDataSchemaMap = (Map<String, String>) checkDataExist(collegeListDataSchemaMap,handleType);
 				if(!collegeListDataSchemaMap.isEmpty()) {
-					if(collegeListDataSchemaMap.containsKey("COLLEGE_REVIEWER_PRESENT_IN_LIST") && Boolean.parseBoolean(collegeListDataSchemaMap.get("COLLEGE_REVIEWER_PRESENT_IN_LIST"))) {
+					if(isReviewDataPresent(collegeListDataSchemaMap,handleType)) {
 						//TODO Update in review_data table
 					}else if(collegeListDataSchemaMap.containsKey("COLLEGE_PRESENT_IN_LIST") && Boolean.parseBoolean(collegeListDataSchemaMap.get("COLLEGE_PRESENT_IN_LIST"))) {
 						//TODO Insert into reviewer list table and add review_data table						
@@ -162,6 +162,26 @@ public class LoadDataToDumpHandler extends WebScrapHandler{
 				}
 			}
 		}
+	}
+
+	private boolean isReviewDataPresent(Map<String, String> collegeListDataSchemaMap, int handleType) {
+		JSONObject collegeDetails = new JSONObject(collegeListDataSchemaMap.get("RESULT_JSON"));
+		if(collegeDetails != null) {
+			if(collegeDetails.has("REVIEWERS")) {
+				JSONArray array = collegeDetails.getJSONArray("REVIEWERS");
+				if(array != null) {
+					for(int i = 0 ; i<array.length(); i++) {
+						if( array.getJSONObject(i).has("REVIEW_IN_SOURCE_ID") && array.getJSONObject(i).has("REVIEWS") && array.getJSONObject(i).getInt("REVIEW_IN_SOURCE_ID") == handleType) {
+							JSONObject review = array.getJSONObject(i).getJSONObject("REVIEWS");
+							if(review != null && review.length() != 0) {
+								return true;
+							}
+						}
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	private void insertIntoCollegeList(Map<String, String> collegeListDataSchemaMap) {
