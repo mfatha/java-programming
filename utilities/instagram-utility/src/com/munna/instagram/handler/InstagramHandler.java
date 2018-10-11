@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import org.apache.http.client.ClientProtocolException;
+import org.brunocvcunha.instagram4j.requests.InstagramFollowRequest;
 import org.brunocvcunha.instagram4j.requests.InstagramGetUserFollowingRequest;
 import org.brunocvcunha.instagram4j.requests.InstagramSearchUsernameRequest;
 import org.brunocvcunha.instagram4j.requests.InstagramUnfollowRequest;
@@ -82,6 +83,10 @@ public class InstagramHandler extends UtilityService {
 	
 	protected void unFollowUser(long igId) throws ClientProtocolException, IOException {
 		InstagramConnectionFactory.getInstance().getConnection().sendRequest(new InstagramUnfollowRequest(igId));
+	}
+	
+	protected void followUser(long igId) throws ClientProtocolException, IOException {
+		InstagramConnectionFactory.getInstance().getConnection().sendRequest(new InstagramFollowRequest(igId));
 	}
 	
 	

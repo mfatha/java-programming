@@ -9,15 +9,23 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.Random;
 
 import org.apache.http.client.ClientProtocolException;
+import org.brunocvcunha.instagram4j.requests.InstagramSearchTagsRequest;
+import org.brunocvcunha.instagram4j.requests.InstagramSearchUsernameRequest;
+import org.brunocvcunha.instagram4j.requests.InstagramTagFeedRequest;
+import org.brunocvcunha.instagram4j.requests.payload.InstagramFeedItem;
+import org.brunocvcunha.instagram4j.requests.payload.InstagramFeedResult;
 import org.brunocvcunha.instagram4j.requests.payload.InstagramGetUserFollowersResult;
+import org.brunocvcunha.instagram4j.requests.payload.InstagramSearchTagsResult;
 import org.brunocvcunha.instagram4j.requests.payload.InstagramSearchUsernameResult;
 import org.brunocvcunha.instagram4j.requests.payload.InstagramUserSummary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.munna.instagram.constants.InstaConstants;
+import com.munna.instagram.factory.InstagramConnectionFactory;
 
 /**
  * @author Mohammed Fathauddin
@@ -29,6 +37,7 @@ public class InstaFollowingHanlder extends InstagramHandler{
 	private static final Logger LOGGER = LoggerFactory.getLogger(InstaFollowingHanlder.class);
 	
 	String IgUsername = InstaConstants.AuthenticationConstant.IG_USERNAME;
+	String FixedCount = InstaConstants.AuthenticationConstant.FIXED_COUNT;
 	
 	@Override
 	public void init() {
@@ -39,16 +48,53 @@ public class InstaFollowingHanlder extends InstagramHandler{
 		        LOGGER.info("Its "+ simpleDateformat.format(now));
 		        Calendar calendar = Calendar.getInstance();
 		        calendar.setTime(now);
-		        if(calendar.get(Calendar.DAY_OF_WEEK) == 1) {
+		        if(calendar.get(Calendar.DAY_OF_WEEK) == 6) {
 		        	unFollowTheFollowingUsers();
-		        }else
-		        	searchForNewUsersAndFollowThem();
+		        } else
+					try {
+						searchForNewUsersAndFollowThem();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} 
 			}while(!stopProcess());		
 	}
 
-	private void searchForNewUsersAndFollowThem() {
-		
+	private void searchForNewUsersAndFollowThem() throws ClientProtocolException, IOException {
+		LOGGER.info("Searching for new Users based on feeds.");
+		long fixedCount = Long.valueOf(FixedCount);
+		long cc = 0L;
+		String[] hashTag_arr = InstaConstants.AuthenticationConstant.HASH_TAGS.split(",");
+		String rasdomTag = hashTag_arr[new Random().nextInt(hashTag_arr.length)];
+		InstagramFeedResult tagFeed = InstagramConnectionFactory.getInstance().getConnection()
+				.sendRequest(new InstagramTagFeedRequest(rasdomTag));
+		LOGGER.info("Number of following count  on " + new Date() + " :"
+				+ getUserDetails(IgUsername).getUser().getFollowing_count());
+		for (InstagramFeedItem feedResult : tagFeed.getItems()) {
+			try {
+				if (cc != fixedCount) {
+					LOGGER.info(
+							"Post ID : " + feedResult.getPk() + "posted by : " + feedResult.getUser().getUsername());
+					followUser(feedResult.getUser().getPk());
+					LOGGER.info("Following user : " + feedResult.getUser().getUsername());
+					cc++;
+					LOGGER.info("User Count in loop: " + cc);
+				} else {
+					break;
+				}
+				if (cc % 10 == 0) {
+					sleep();
+				}
+			} catch (ClientProtocolException e) {
+				LOGGER.error("ClientProtocolException while trigerring unfollow user command ("
+						+ feedResult.getUser().getUsername() + ")", e);
+			} catch (IOException e) {
+				LOGGER.error("IOException while trigerring unfollow user command (" + feedResult.getUser().getUsername()
+						+ ")", e);
+			}
+		}
 	}
+	
 
 	private void unFollowTheFollowingUsers() {
 		InstagramSearchUsernameResult user = getUserDetails(IgUsername);
