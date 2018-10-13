@@ -39,15 +39,7 @@ public class InstaConstants {
 		
 		public static final String STOP_PROCESS = "STOP_PROCESS";
 		
-		public static final String HASHTAG = "FEED_TAGS";
-
-		public static final String FIXEDCOUNT = "FOLLOWEING_COUNTS";
-		
 		public static final String IG_USERNAME = PropertiesProvider.getInstance().getProperties(InstaConstants.CONFIGURATION_FILE).getProperty(USERNAME);
-		
-		public static final String HASH_TAGS = PropertiesProvider.getInstance().getProperties(InstaConstants.CONFIGURATION_FILE).getProperty(HASHTAG);
-		
-		public static final String FIXED_COUNT = PropertiesProvider.getInstance().getProperties(InstaConstants.CONFIGURATION_FILE).getProperty(FIXEDCOUNT);
 		
 		public static final String IG_EMAIL = PropertiesProvider.getInstance().getProperties(InstaConstants.CONFIGURATION_FILE).getProperty(EMAIL);
 		
@@ -55,6 +47,17 @@ public class InstaConstants {
 		
 		public static final Boolean IG_STOP_PROCESS = Boolean.parseBoolean(PropertiesProvider.getInstance().getProperties(InstaConstants.CONFIGURATION_FILE).getProperty(STOP_PROCESS));
 		
+	}
+	
+	public final static class FollowingConstants {
+		
+		public static final String HASHTAG = "FEED_TAGS";
+
+		public static final String FIXEDCOUNT = "EACH_TAG_FOLLOWEING_COUNTS";
+		
+		public static final String HASH_TAGS = PropertiesProvider.getInstance().getProperties(InstaConstants.CONFIGURATION_FILE).getProperty(HASHTAG);
+		
+		public static final Long FIXED_COUNT = Long.parseLong(PropertiesProvider.getInstance().getProperties(InstaConstants.CONFIGURATION_FILE).getProperty(FIXEDCOUNT).trim());
 	}
 
 }

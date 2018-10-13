@@ -37,7 +37,7 @@ public class InstaFollowingHanlder extends InstagramHandler{
 	private static final Logger LOGGER = LoggerFactory.getLogger(InstaFollowingHanlder.class);
 	
 	String IgUsername = InstaConstants.AuthenticationConstant.IG_USERNAME;
-	String FixedCount = InstaConstants.AuthenticationConstant.FIXED_COUNT;
+	Boolean isFollowingEmpty = false;
 	
 	@Override
 	public void init() {
@@ -48,49 +48,55 @@ public class InstaFollowingHanlder extends InstagramHandler{
 		        LOGGER.info("Its "+ simpleDateformat.format(now));
 		        Calendar calendar = Calendar.getInstance();
 		        calendar.setTime(now);
-		        if(calendar.get(Calendar.DAY_OF_WEEK) == 6) {
+		        if(calendar.get(Calendar.DAY_OF_WEEK) == 7 && !isFollowingEmpty) {
 		        	unFollowTheFollowingUsers();
-		        } else
-					try {
-						searchForNewUsersAndFollowThem();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} 
+		        } else {
+		        	searchForNewUsersAndFollowThem();
+		        }
 			}while(!stopProcess());		
 	}
 
-	private void searchForNewUsersAndFollowThem() throws ClientProtocolException, IOException {
+	private void searchForNewUsersAndFollowThem(){
 		LOGGER.info("Searching for new Users based on feeds.");
-		long fixedCount = Long.valueOf(FixedCount);
+		long fixedCount = InstaConstants.FollowingConstants.FIXED_COUNT;
 		long cc = 0L;
-		String[] hashTag_arr = InstaConstants.AuthenticationConstant.HASH_TAGS.split(",");
-		String rasdomTag = hashTag_arr[new Random().nextInt(hashTag_arr.length)];
-		InstagramFeedResult tagFeed = InstagramConnectionFactory.getInstance().getConnection()
-				.sendRequest(new InstagramTagFeedRequest(rasdomTag));
+		String[] hashTag_arr = InstaConstants.FollowingConstants.HASH_TAGS.split(",");
+		String randomTag = hashTag_arr[new Random().nextInt(hashTag_arr.length)];
+		InstagramFeedResult tagFeed = null;
+		try {
+			LOGGER.info("Searching feeds under : #"+randomTag);
+			tagFeed = InstagramConnectionFactory.getInstance().getConnection()
+					.sendRequest(new InstagramTagFeedRequest(randomTag));
+		}	
+		catch (ClientProtocolException e) {
+			LOGGER.error("ClientProtocolException while getting random tag feeds",e);
+		} catch (IOException e) {
+			LOGGER.error("IOException while getting random tag feeds",e);
+		}
 		LOGGER.info("Number of following count  on " + new Date() + " :"
 				+ getUserDetails(IgUsername).getUser().getFollowing_count());
-		for (InstagramFeedItem feedResult : tagFeed.getItems()) {
-			try {
-				if (cc != fixedCount) {
-					LOGGER.info(
-							"Post ID : " + feedResult.getPk() + "posted by : " + feedResult.getUser().getUsername());
-					followUser(feedResult.getUser().getPk());
-					LOGGER.info("Following user : " + feedResult.getUser().getUsername());
-					cc++;
-					LOGGER.info("User Count in loop: " + cc);
-				} else {
-					break;
+		if(tagFeed != null) {
+			for (InstagramFeedItem feedResult : tagFeed.getItems()) {
+				try {
+					if (cc != fixedCount) {
+						LOGGER.info("Post ID : " + feedResult.getPk() + "posted by : " + feedResult.getUser().getUsername());
+						followUser(feedResult.getUser().getPk());
+						LOGGER.info("Following user : " + feedResult.getUser().getUsername());
+						cc++;
+						LOGGER.info("User Count in loop: " + cc);
+					} else {
+						break;
+					}
+					if (cc % 10 == 0) {
+						sleep();
+					}
+				} catch (ClientProtocolException e) {
+					LOGGER.error("ClientProtocolException while trigerring unfollow user command ("
+							+ feedResult.getUser().getUsername() + ")", e);
+				} catch (IOException e) {
+					LOGGER.error("IOException while trigerring unfollow user command (" + feedResult.getUser().getUsername()
+							+ ")", e);
 				}
-				if (cc % 10 == 0) {
-					sleep();
-				}
-			} catch (ClientProtocolException e) {
-				LOGGER.error("ClientProtocolException while trigerring unfollow user command ("
-						+ feedResult.getUser().getUsername() + ")", e);
-			} catch (IOException e) {
-				LOGGER.error("IOException while trigerring unfollow user command (" + feedResult.getUser().getUsername()
-						+ ")", e);
 			}
 		}
 	}
@@ -102,29 +108,35 @@ public class InstaFollowingHanlder extends InstagramHandler{
 		LOGGER.info("Number of following for("+IgUsername+"): " + user.getUser().getFollowing_count());
 		long followingPeopleCount = user.getUser().getFollowing_count();
 		long i = 1L;
-		while(followingPeopleCount != 0) {
-			InstagramGetUserFollowersResult userFollowingList = getFollowingUser(user.getUser().getPk());
-			List<InstagramUserSummary> followings = userFollowingList.getUsers();
-			if(followings != null && followings.size() !=0) {
-				for(InstagramUserSummary followingUser : followings) {
-					try {
-						LOGGER.info("Unfollowing USER :"+ followingUser.getUsername());
-						unFollowUser(followingUser.getPk());
-					} catch (ClientProtocolException e) {
-						LOGGER.error("ClientProtocolException while trigerring unfollow user command ("+followingUser.getUsername()+")",e);
-					} catch (IOException e) {
-						LOGGER.error("IOException while trigerring unfollow user command ("+followingUser.getUsername()+")",e);
+		if(followingPeopleCount != 0) {
+			while(followingPeopleCount != 0) {
+				InstagramGetUserFollowersResult userFollowingList = getFollowingUser(user.getUser().getPk());
+				List<InstagramUserSummary> followings = userFollowingList.getUsers();
+				if(followings != null && followings.size() !=0) {
+					for(InstagramUserSummary followingUser : followings) {
+						try {
+							LOGGER.info("Unfollowing USER :"+ followingUser.getUsername());
+							unFollowUser(followingUser.getPk());
+						} catch (ClientProtocolException e) {
+							LOGGER.error("ClientProtocolException while trigerring unfollow user command ("+followingUser.getUsername()+")",e);
+						} catch (IOException e) {
+							LOGGER.error("IOException while trigerring unfollow user command ("+followingUser.getUsername()+")",e);
+						}
+						i++;
+						if(i%50 ==0)
+							sleep();
 					}
-					i++;
-					if(i%50 ==0)
-						sleep();
-				}
-				user = getUserDetails(IgUsername);
-				followingPeopleCount = user.getUser().getFollowing_count();
-			}else
-				followingPeopleCount =0L;
-							
+					user = getUserDetails(IgUsername);
+					followingPeopleCount = user.getUser().getFollowing_count();
+				}else
+					followingPeopleCount =0L;
+								
+			}
+		}else {
+			LOGGER.info("Following list is empty");
+			isFollowingEmpty = true;
 		}
+		
 	}
 
 	
