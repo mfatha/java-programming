@@ -87,7 +87,7 @@ public class InstaFollowingHanlder extends InstagramHandler{
 					} else {
 						break;
 					}
-					if (cc % 10 == 0) {
+					if (cc % 20 == 0) {
 						sleep();
 					}
 				} catch (ClientProtocolException e) {
