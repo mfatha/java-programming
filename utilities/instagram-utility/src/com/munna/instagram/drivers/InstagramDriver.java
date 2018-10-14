@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.Future;
 
-import org.brunocvcunha.instagram4j.Instagram4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

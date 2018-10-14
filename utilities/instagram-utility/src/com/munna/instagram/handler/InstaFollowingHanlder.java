@@ -87,7 +87,7 @@ public class InstaFollowingHanlder extends InstagramHandler{
 					} else {
 						break;
 					}
-					if (cc % 20 == 0) {
+					if (cc % 10 == 0) {
 						sleep();
 					}
 				} catch (ClientProtocolException e) {
@@ -123,7 +123,7 @@ public class InstaFollowingHanlder extends InstagramHandler{
 							LOGGER.error("IOException while trigerring unfollow user command ("+followingUser.getUsername()+")",e);
 						}
 						i++;
-						if(i%50 ==0)
+						if(i%10 ==0)
 							sleep();
 					}
 					user = getUserDetails(IgUsername);
@@ -136,7 +136,6 @@ public class InstaFollowingHanlder extends InstagramHandler{
 			LOGGER.info("Following list is empty");
 			isFollowingEmpty = true;
 		}
-		
 	}
 
 	

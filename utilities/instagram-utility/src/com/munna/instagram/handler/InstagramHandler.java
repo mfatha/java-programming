@@ -2,18 +2,23 @@ package com.munna.instagram.handler;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.http.client.ClientProtocolException;
 import org.brunocvcunha.instagram4j.requests.InstagramFollowRequest;
+import org.brunocvcunha.instagram4j.requests.InstagramGetUserFollowersRequest;
 import org.brunocvcunha.instagram4j.requests.InstagramGetUserFollowingRequest;
 import org.brunocvcunha.instagram4j.requests.InstagramSearchUsernameRequest;
 import org.brunocvcunha.instagram4j.requests.InstagramUnfollowRequest;
 import org.brunocvcunha.instagram4j.requests.payload.InstagramGetUserFollowersResult;
 import org.brunocvcunha.instagram4j.requests.payload.InstagramSearchUsernameResult;
+import org.brunocvcunha.instagram4j.requests.payload.InstagramUserSummary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,12 +86,64 @@ public class InstagramHandler extends UtilityService {
 		return null;
 	} 
 	
+	protected InstagramGetUserFollowersResult getFollowerUser(long igId, String maxId) {
+		try {
+			if(maxId == null) {
+				return InstagramConnectionFactory.getInstance().getConnection().sendRequest(new InstagramGetUserFollowersRequest(igId));
+			}
+			return InstagramConnectionFactory.getInstance().getConnection().sendRequest(new InstagramGetUserFollowersRequest(igId, maxId));
+		} catch (ClientProtocolException e) {
+			LOGGER.error("ClientProtocol Error. ",e);	
+		} catch (IOException e) {
+			LOGGER.error("IOException Error. ",e);	
+		}
+		return null;
+	} 
+	
 	protected void unFollowUser(long igId) throws ClientProtocolException, IOException {
 		InstagramConnectionFactory.getInstance().getConnection().sendRequest(new InstagramUnfollowRequest(igId));
 	}
 	
 	protected void followUser(long igId) throws ClientProtocolException, IOException {
 		InstagramConnectionFactory.getInstance().getConnection().sendRequest(new InstagramFollowRequest(igId));
+	}
+	
+	protected Map<String,List<String>> getFollowers(String igUsername){
+		InstagramSearchUsernameResult user = getUserDetails(igUsername);
+		long followerUserAdded =0L;
+		LOGGER.info("Number of followers for("+igUsername+"): " + user.getUser().getFollower_count());
+		Map<String,List<String>> followersMap = new HashMap<String,List<String>>();
+		String maxId = null;
+		do {
+			InstagramGetUserFollowersResult userFollowingList = getFollowerUser(user.getUser().getPk(), maxId);
+			if(userFollowingList.getUsers() != null) {
+				List<InstagramUserSummary> followersList = userFollowingList.getUsers();
+				maxId = userFollowingList.getNext_max_id();
+				if(followersList != null && followersList.size() !=0) {
+					for(InstagramUserSummary followerUser : followersList) {
+						String hashCode = String.valueOf((followerUser.getUsername().hashCode())% 1000);
+						if(followersMap.containsKey(hashCode)) {
+							if(!followersMap.get(hashCode).contains(followerUser.getUsername())) {
+								followersMap.get(hashCode).add(followerUser.getUsername());
+								followerUserAdded++;
+							}
+						}else {
+							List<String> userList = new ArrayList<>();
+							userList.add(followerUser.getUsername());
+							followersMap.put(hashCode, userList);
+							followerUserAdded++;
+						}
+					}
+				}
+			}else {
+				LOGGER.error("Error with getting Followers list , where maxId = "+maxId+" : "+ userFollowingList);
+				maxId = null;			
+			}
+			if(followerUserAdded == user.getUser().getFollower_count())
+				maxId = null;
+		}while(maxId!= null);
+		LOGGER.info("Got all Followers List, Count : "+ followerUserAdded);
+		return followersMap;
 	}
 	
 	
