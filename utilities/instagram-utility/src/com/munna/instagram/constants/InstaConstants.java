@@ -15,7 +15,7 @@ public class InstaConstants {
 
 	public static final boolean THREAD_SLEEP_ENABLED = true;
 
-	public static final long THREAD_SLEEP_DELAY = TimeUnit.MINUTES.toMillis(3);
+	public static final long THREAD_SLEEP_DELAY = TimeUnit.MINUTES.toMillis(2);
 
 	public static final int RETRY_COUNT = 5;	
 
@@ -28,6 +28,8 @@ public class InstaConstants {
 	public static final String CONFIGURATION_FILE = CONF_FOLDER.concat("config.properties");
 
 	public static final String DEFAULT_IG_CONNECTION = "DEFAULT";
+	
+	public static final String DEFAULT_MESSAGE = "Thank You for following Scholarhaunt, \n \t We are happy to help you in any knowledgeable way. help us to reach more. \nDM : @scholarhaunt";
 	
 	public final static class AuthenticationConstant {
 		

@@ -2,12 +2,15 @@ package com.munna.instagram.factory;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.http.client.ClientProtocolException;
 import org.brunocvcunha.instagram4j.Instagram4j;
+import org.brunocvcunha.instagram4j.requests.InstagramRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,6 +91,5 @@ public class InstagramConnectionFactory {
 			LOGGER.error("Error occurred while closing the connection", e);
 		}
 	}
-
 
 }
