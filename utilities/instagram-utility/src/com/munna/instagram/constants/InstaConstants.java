@@ -31,6 +31,8 @@ public class InstaConstants {
 	
 	public static final String DEFAULT_MESSAGE = "Thank You for following Scholarhaunt, \n \t We are happy to help you in any knowledgeable way. help us to reach more. \nDM : @scholarhaunt";
 	
+	public static final String DEFAULT_COMMENT = "Awesome post, #keepItUp. Tag us (@scholarhaunt / #scholarhaunt) in your future post to reach more.";
+	
 	public final static class AuthenticationConstant {
 		
 		public static final String USERNAME = "USERNAME";

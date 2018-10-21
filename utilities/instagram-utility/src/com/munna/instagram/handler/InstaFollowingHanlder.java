@@ -65,6 +65,8 @@ public class InstaFollowingHanlder extends InstagramHandler{
 			for (InstagramFeedItem feedResult : tagFeed.getItems()) {
 				try {
 					if (cc != fixedCount) {
+						InstagramManager.likePost(feedResult.getPk());
+						InstagramManager.commentPost(feedResult.getPk());
 						LOGGER.info("Post ID : " + feedResult.getPk() + "posted by : " + feedResult.getUser().getUsername());
 						InstagramManager.followUser(feedResult.getUser().getPk());
 						LOGGER.info("Following user : " + feedResult.getUser().getUsername());
@@ -109,7 +111,7 @@ public class InstaFollowingHanlder extends InstagramHandler{
 							LOGGER.error("IOException while trigerring unfollow user command ("+followingUser.getUsername()+")",e);
 						}
 						i++;
-						if(i%50 ==0)
+						if(i%100 ==0)
 							sleep();
 					}
 					user = InstagramManager.getUserDetails(IgUsername);

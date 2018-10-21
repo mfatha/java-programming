@@ -62,7 +62,11 @@ public class InstaFollowerHanlder extends InstagramHandler {
 			}
 			if(saveFollowersList){
 				LOGGER.info("Sending Welcome message to new users...");
-				InstagramManager.message(newFollowers);
+				for(String newFollow : newFollowers){
+					List<String> temp = new ArrayList<String>();
+					temp.add(newFollow);
+					InstagramManager.message(temp);
+				}
 			}
 			//Loading new map to global variable
 			followers = tempFollowers;

@@ -16,6 +16,8 @@ import org.brunocvcunha.instagram4j.requests.InstagramDirectShareRequest.ShareTy
 import org.brunocvcunha.instagram4j.requests.InstagramFollowRequest;
 import org.brunocvcunha.instagram4j.requests.InstagramGetUserFollowersRequest;
 import org.brunocvcunha.instagram4j.requests.InstagramGetUserFollowingRequest;
+import org.brunocvcunha.instagram4j.requests.InstagramLikeRequest;
+import org.brunocvcunha.instagram4j.requests.InstagramPostCommentRequest;
 import org.brunocvcunha.instagram4j.requests.InstagramSearchUsernameRequest;
 import org.brunocvcunha.instagram4j.requests.InstagramTagFeedRequest;
 import org.brunocvcunha.instagram4j.requests.InstagramUnfollowRequest;
@@ -141,6 +143,52 @@ import com.munna.instagram.constants.InstaConstants;
 			}
 		}
 	}
+
+	public static InstagramFeedResult getTagFeeds(String randomTag) {
+		synchronized (InstagramManager.class) {
+			try {
+				return InstagramConnectionFactory.getInstance().getConnection()
+				.sendRequest(new InstagramTagFeedRequest(randomTag));
+			} catch (ClientProtocolException e) {
+				LOGGER.error("Client Protocol error while getting feeds",e);
+			} catch (IOException e) {
+				LOGGER.error("IO error while getting feeds",e);
+			}
+			return null;
+		}
+	}
+
+	public static void likePost(long postId) {
+		synchronized (InstagramManager.class) {
+			try {
+				InstagramConnectionFactory.getInstance().getConnection().sendRequest(new InstagramLikeRequest(postId));
+			}  catch (ClientProtocolException e) {
+				LOGGER.error("Client Protocol error while liking feeds",e);
+			} catch (IOException e) {
+				LOGGER.error("IO error while liking feeds",e);
+			} finally{
+				LOGGER.info("Liked successfully..");
+			}
+		}
+	}
+
+	public static void commentPost(long postId) {
+		commentPost(postId,InstaConstants.DEFAULT_COMMENT);
+	}
+
+	private static void commentPost(long postId, String commentMessage) {
+		synchronized (InstagramManager.class) {
+			try {
+				InstagramConnectionFactory.getInstance().getConnection().sendRequest(new InstagramPostCommentRequest(postId,commentMessage));
+			}  catch (ClientProtocolException e) {
+				LOGGER.error("Client Protocol error while commenting feeds",e);
+			} catch (IOException e) {
+				LOGGER.error("IO error while commenting feeds",e);
+			} finally{
+				LOGGER.info("Commented successfully..");
+			}
+		}
+	}
 	
 	public static boolean stopProcess() {
 		File configFile = new File(InstaConstants.CONFIGURATION_FILE);
@@ -157,17 +205,4 @@ import com.munna.instagram.constants.InstaConstants;
 		return stopProcess;
 	}
 
-	public static InstagramFeedResult getTagFeeds(String randomTag) {
-		synchronized (InstagramManager.class) {
-			try {
-				return InstagramConnectionFactory.getInstance().getConnection()
-				.sendRequest(new InstagramTagFeedRequest(randomTag));
-			} catch (ClientProtocolException e) {
-				LOGGER.error("Client Protocol error while getting feeds",e);
-			} catch (IOException e) {
-				LOGGER.error("IO error while getting feeds",e);
-			}
-			return null;
-		}
-	}
 }
