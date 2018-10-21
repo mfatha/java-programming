@@ -64,12 +64,10 @@ public class InstagramDriver {
 						break;
 					case "4":
 						//TODO make it do all process in parallel
-						IG = new InstaFollowingHanlder();
-						futures.add(ExecutorServiceFactory.getInstance("IG_Executor").addService(IG));
-						IG= null;
-						IG = new InstaFollowerHanlder();
-						futures.add(ExecutorServiceFactory.getInstance("IG_Executor").addService(IG));
-						IG= null;						
+						futures.add(ExecutorServiceFactory.getInstance("IG_Executor").addService(new InstaFollowerHanlder()));
+						Thread.sleep(2000);		
+						futures.add(ExecutorServiceFactory.getInstance("IG_Executor").addService(new InstaFollowingHanlder()));
+						Thread.sleep(2000);	
 						break;
 				}
 				if(IG != null){

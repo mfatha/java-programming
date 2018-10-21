@@ -17,7 +17,9 @@ import org.brunocvcunha.instagram4j.requests.InstagramFollowRequest;
 import org.brunocvcunha.instagram4j.requests.InstagramGetUserFollowersRequest;
 import org.brunocvcunha.instagram4j.requests.InstagramGetUserFollowingRequest;
 import org.brunocvcunha.instagram4j.requests.InstagramSearchUsernameRequest;
+import org.brunocvcunha.instagram4j.requests.InstagramTagFeedRequest;
 import org.brunocvcunha.instagram4j.requests.InstagramUnfollowRequest;
+import org.brunocvcunha.instagram4j.requests.payload.InstagramFeedResult;
 import org.brunocvcunha.instagram4j.requests.payload.InstagramGetUserFollowersResult;
 import org.brunocvcunha.instagram4j.requests.payload.InstagramSearchUsernameResult;
 import org.brunocvcunha.instagram4j.requests.payload.InstagramUserSummary;
@@ -85,41 +87,43 @@ import com.munna.instagram.constants.InstaConstants;
 	}
 	
 	public static Map<String,List<String>> getFollowers(String igUsername){
-		InstagramSearchUsernameResult user = getUserDetails(igUsername);
-		long followerUserAdded =0L;
-		LOGGER.info("Number of followers for("+igUsername+"): " + user.getUser().getFollower_count());
-		Map<String,List<String>> followersMap = new HashMap<String,List<String>>();
-		String maxId = null;
-		do {
-			InstagramGetUserFollowersResult userFollowingList = getFollowerUser(user.getUser().getPk(), maxId);
-			if(userFollowingList.getUsers() != null) {
-				List<InstagramUserSummary> followersList = userFollowingList.getUsers();
-				maxId = userFollowingList.getNext_max_id();
-				if(followersList != null && followersList.size() !=0) {
-					for(InstagramUserSummary followerUser : followersList) {
-						String hashCode = String.valueOf((followerUser.getUsername().hashCode())% 1000);
-						if(followersMap.containsKey(hashCode)) {
-							if(!followersMap.get(hashCode).contains(followerUser.getUsername())) {
-								followersMap.get(hashCode).add(followerUser.getUsername());
+		synchronized (InstagramManager.class) {
+			InstagramSearchUsernameResult user = getUserDetails(igUsername);
+			long followerUserAdded =0L;
+			LOGGER.info("Number of followers for("+igUsername+"): " + user.getUser().getFollower_count());
+			Map<String,List<String>> followersMap = new HashMap<String,List<String>>();
+			String maxId = null;
+			do {
+				InstagramGetUserFollowersResult userFollowingList = getFollowerUser(user.getUser().getPk(), maxId);
+				if(userFollowingList.getUsers() != null) {
+					List<InstagramUserSummary> followersList = userFollowingList.getUsers();
+					maxId = userFollowingList.getNext_max_id();
+					if(followersList != null && followersList.size() !=0) {
+						for(InstagramUserSummary followerUser : followersList) {
+							String hashCode = String.valueOf((followerUser.getUsername().hashCode())% 1000);
+							if(followersMap.containsKey(hashCode)) {
+								if(!followersMap.get(hashCode).contains(followerUser.getUsername())) {
+									followersMap.get(hashCode).add(followerUser.getUsername());
+									followerUserAdded++;
+								}
+							}else {
+								List<String> userList = new ArrayList<>();
+								userList.add(followerUser.getUsername());
+								followersMap.put(hashCode, userList);
 								followerUserAdded++;
 							}
-						}else {
-							List<String> userList = new ArrayList<>();
-							userList.add(followerUser.getUsername());
-							followersMap.put(hashCode, userList);
-							followerUserAdded++;
 						}
 					}
+				}else {
+					LOGGER.error("Error with getting Followers list , where maxId = "+maxId+" : "+ userFollowingList);
+					maxId = null;			
 				}
-			}else {
-				LOGGER.error("Error with getting Followers list , where maxId = "+maxId+" : "+ userFollowingList);
-				maxId = null;			
-			}
-			if(followerUserAdded == user.getUser().getFollower_count())
-				maxId = null;
-		}while(maxId!= null);
-		LOGGER.info("Got all Followers List, Count : "+ followerUserAdded);
-		return followersMap;
+				if(followerUserAdded == user.getUser().getFollower_count())
+					maxId = null;
+			}while(maxId!= null);
+			LOGGER.info("Got all Followers List, Count : "+ followerUserAdded);
+			return followersMap;			
+		}
 	}
 	
 	public static void message(List<String> users){
@@ -127,12 +131,14 @@ import com.munna.instagram.constants.InstaConstants;
 	}
 	
 	public static void message(List<String> users,String message) {
-		try {
-			InstagramConnectionFactory.getInstance().getConnection().sendRequest(InstagramDirectShareRequest.builder(ShareType.MESSAGE, users).message(message).build());
-		} catch (IOException e) {
-			LOGGER.error("Error while sending message to users ",e);
-		}finally {
-			LOGGER.info("MESSAGE sent Successfully.");
+		synchronized (InstagramManager.class) {
+			try {
+				InstagramConnectionFactory.getInstance().getConnection().sendRequest(InstagramDirectShareRequest.builder(ShareType.MESSAGE, users).message(message).build());
+			} catch (IOException e) {
+				LOGGER.error("Error while sending message to users ",e);
+			}finally {
+				LOGGER.info("MESSAGE sent Successfully.");
+			}
 		}
 	}
 	
@@ -149,5 +155,19 @@ import com.munna.instagram.constants.InstaConstants;
 		}
 		stopProcess = Boolean.parseBoolean(properties.getProperty(InstaConstants.AuthenticationConstant.STOP_PROCESS));
 		return stopProcess;
+	}
+
+	public static InstagramFeedResult getTagFeeds(String randomTag) {
+		synchronized (InstagramManager.class) {
+			try {
+				return InstagramConnectionFactory.getInstance().getConnection()
+				.sendRequest(new InstagramTagFeedRequest(randomTag));
+			} catch (ClientProtocolException e) {
+				LOGGER.error("Client Protocol error while getting feeds",e);
+			} catch (IOException e) {
+				LOGGER.error("IO error while getting feeds",e);
+			}
+			return null;
+		}
 	}
 }

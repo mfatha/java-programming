@@ -57,16 +57,8 @@ public class InstaFollowingHanlder extends InstagramHandler{
 		String[] hashTag_arr = InstaConstants.FollowingConstants.HASH_TAGS.split(",");
 		String randomTag = hashTag_arr[new Random().nextInt(hashTag_arr.length)];
 		InstagramFeedResult tagFeed = null;
-		try {
-			LOGGER.info("Searching feeds under : #"+randomTag);
-			tagFeed = InstagramConnectionFactory.getInstance().getConnection()
-					.sendRequest(new InstagramTagFeedRequest(randomTag));
-		}	
-		catch (ClientProtocolException e) {
-			LOGGER.error("ClientProtocolException while getting random tag feeds",e);
-		} catch (IOException e) {
-			LOGGER.error("IOException while getting random tag feeds",e);
-		}
+		LOGGER.info("Searching feeds under : #"+randomTag);
+		tagFeed = InstagramManager.getTagFeeds(randomTag);
 		LOGGER.info("Number of following count  on " + new Date() + " :"
 				+ InstagramManager.getUserDetails(IgUsername).getUser().getFollowing_count());
 		if(tagFeed != null) {

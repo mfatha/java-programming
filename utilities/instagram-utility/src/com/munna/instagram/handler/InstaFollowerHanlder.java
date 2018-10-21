@@ -23,6 +23,7 @@ public class InstaFollowerHanlder extends InstagramHandler {
 	
 	@Override
 	public void init() {
+		LOGGER.info("Starting Follower Manager Handler..");
 		followers = InstagramManager.getFollowers(IgUsername);
 		//TODO For every 15 mins get users list again and if new user send welcome message. 
 		Boolean saveFollowersList = false;
