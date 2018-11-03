@@ -142,20 +142,33 @@ public class LoadDataToDumpHandler extends WebScrapHandler{
 				if(!collegeListDataSchemaMap.isEmpty()) {
 					if(isReviewDataPresent(collegeListDataSchemaMap,handleType)) {
 						//TODO Update in review_data table
-					}else if(collegeListDataSchemaMap.containsKey("COLLEGE_PRESENT_IN_LIST") && Boolean.parseBoolean(collegeListDataSchemaMap.get("COLLEGE_PRESENT_IN_LIST"))) {
-						//TODO Insert into reviewer list table and add review_data table						
-					}else {
-						//TODO create CollegeLIST
-						insertIntoCollegeList(collegeListDataSchemaMap);
 						if(!collegeListDataSchemaMap.containsKey("COLLEGE_ID")) {
 							collegeListDataSchemaMap.put("COLLEGE_ID", getCollegeIdFromName(collegeListDataSchemaMap.get("COLLEGE_NAME")));
 						}
-						//TODO create CollegeREVIEWLIST
+						if(!collegeListDataSchemaMap.containsKey("REVIEW_TO_ID")) {
+							collegeListDataSchemaMap.put("REVIEW_TO_ID", getReviewId(collegeListDataSchemaMap.get("COLLEGE_ID"), collegeListDataSchemaMap.get("REVIEW_IN_SOURCE_ID")));
+						}
+						updateReviewData(collegeListDataSchemaMap);
+						LOGGER.info("INSERTED DATA FOR "+ collegeListDataSchemaMap);
+					}else if(collegeListDataSchemaMap.containsKey("COLLEGE_PRESENT_IN_LIST") && Boolean.parseBoolean(collegeListDataSchemaMap.get("COLLEGE_PRESENT_IN_LIST"))) {
+						if(!collegeListDataSchemaMap.containsKey("COLLEGE_ID")) {
+							collegeListDataSchemaMap.put("COLLEGE_ID", getCollegeIdFromName(collegeListDataSchemaMap.get("COLLEGE_NAME")));
+						}
 						insertIntoReviewList(collegeListDataSchemaMap);
 						if(!collegeListDataSchemaMap.containsKey("REVIEW_TO_ID")) {
 							collegeListDataSchemaMap.put("REVIEW_TO_ID", getReviewId(collegeListDataSchemaMap.get("COLLEGE_ID"), collegeListDataSchemaMap.get("REVIEW_IN_SOURCE_ID")));
 						}
-						//TODO create ReviewDATA
+						insertIntoReviewData(collegeListDataSchemaMap);
+						LOGGER.info("INSERTED DATA FOR "+ collegeListDataSchemaMap);
+					}else {
+						insertIntoCollegeList(collegeListDataSchemaMap);
+						if(!collegeListDataSchemaMap.containsKey("COLLEGE_ID")) {
+							collegeListDataSchemaMap.put("COLLEGE_ID", getCollegeIdFromName(collegeListDataSchemaMap.get("COLLEGE_NAME")));
+						}
+						insertIntoReviewList(collegeListDataSchemaMap);
+						if(!collegeListDataSchemaMap.containsKey("REVIEW_TO_ID")) {
+							collegeListDataSchemaMap.put("REVIEW_TO_ID", getReviewId(collegeListDataSchemaMap.get("COLLEGE_ID"), collegeListDataSchemaMap.get("REVIEW_IN_SOURCE_ID")));
+						}
 						insertIntoReviewData(collegeListDataSchemaMap);
 						LOGGER.info("INSERTED DATA FOR "+ collegeListDataSchemaMap);
 					}
@@ -216,6 +229,24 @@ public class LoadDataToDumpHandler extends WebScrapHandler{
 			for(String review : WebSurfConstants.SQLConstant.REVIEW_DATA_NAMES) {
 				if(collegeListDataSchemaMap.containsKey(review) && collegeListDataSchemaMap.get(review)!= null) {
 					String query =  "INSERT INTO review_data (REVIEW_ID, REVIEW_NAME, VALUE ) VALUES ( "+collegeListDataSchemaMap.get("REVIEW_TO_ID")+", '"+review+"', '"+collegeListDataSchemaMap.get(review)+"')";
+					try {
+						dataManager.executeUpdate(query);
+					} catch (Exception e) {
+						LOGGER.error("Error in execting query : " + e);
+					}
+				}			
+			}
+		}else {
+			LOGGER.error("NO REVIEWER DETAILS FOUND...");
+		}
+	}
+	
+	private void updateReviewData(Map<String, String> collegeListDataSchemaMap) {
+		DataSchemaManager dataManager = new DataSchemaManager();
+		if(collegeListDataSchemaMap.containsKey("REVIEW_TO_ID") && collegeListDataSchemaMap.get("REVIEW_TO_ID") != null) {
+			for(String review : WebSurfConstants.SQLConstant.REVIEW_DATA_NAMES) {
+				if(collegeListDataSchemaMap.containsKey(review) && collegeListDataSchemaMap.get(review)!= null) {
+					String query =  "UPDATE review_data SET VALUE = '"+collegeListDataSchemaMap.get(review)+"' WHERE REVIEW_ID = "+collegeListDataSchemaMap.get("REVIEW_TO_ID")+" AND REVIEW_NAME = '"+review+"'"; 
 					try {
 						dataManager.executeUpdate(query);
 					} catch (Exception e) {

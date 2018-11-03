@@ -90,24 +90,6 @@ public class DataSchemaManager {
 		}
 	}
 	
-	public Boolean isColumnFamilyExist(String tableName, Map<String,String> columnDataSchema) throws Exception{
-		//TODO column exist
-		return false;
-	}
-	
-	public void addColumnFamily(String tableName, Map<String,String> columnDataSchema) throws Exception{
-		//TODO Add column
-		if(isColumnFamilyExist(tableName, columnDataSchema)) {
-			
-		}
-	}
-	
-	public void updateColumnFamily(String tableName, Map<String,String> columnDataSchema) {
-		//TODOUpdate Column
-	}
-	
-	
-	
 	public ResultSet executeCommand(String query) throws Exception{
 		return executeCommand(this.connection, query);		
 	}
