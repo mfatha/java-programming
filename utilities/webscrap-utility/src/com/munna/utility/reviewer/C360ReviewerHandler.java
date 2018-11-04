@@ -54,7 +54,7 @@ public class C360ReviewerHandler extends ReviewerHandler {
 		DataSchemaManager dataManager = new DataSchemaManager();
 		if (dataManager.isTableExist(WebSurfConstants.SQLConstant.COLLEGE_LIST)) {
 			if(dataMap.containsKey("College Name") && !Util.isNull(dataMap.get("College Name"))) {
-				String collegeName = dataMap.get("College Name").split(",")[0];
+				String collegeName = dataMap.get("College Name").trim().replaceAll("\\s+","");
 				collegeListDataSchemaMap.put("COLLEGE_NAME",(!Util.isEmpty(collegeName))? collegeName : null);
 			}			
 			collegeListDataSchemaMap.put("REVIEW_IN_SOURCE_ID", "1");
@@ -75,6 +75,7 @@ public class C360ReviewerHandler extends ReviewerHandler {
 				DecimalFormat f = new DecimalFormat("##.00");
 				rWeight = Double.parseDouble(f.format(rWeight));
 				collegeListDataSchemaMap.put("REVIEWER_RATING",(!Util.isNull(rWeight))? Double.toString(rWeight) : null);
+				collegeListDataSchemaMap.put("TOTAL_REVIEWER",(!Util.isNull(dataMap.get("All")))? dataMap.get("All") : null);
 			}
 			collegeListDataSchemaMap.put("INFRASTRUCTURE",(dataMap.containsKey("College Infrastructure") && !Util.isNull(dataMap.get("College Infrastructure")))? dataMap.get("College Infrastructure") : null);
 			collegeListDataSchemaMap.put("PLACEMENT",(dataMap.containsKey("Campus placement") && !Util.isNull(dataMap.get("Campus placement")))? dataMap.get("Campus placement") : null);

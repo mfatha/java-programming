@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import com.munna.common.properties.PropertiesProvider;
+import com.munna.common.util.Util;
 
 /**
  * @author Mohammed Fathauddin
@@ -18,7 +19,7 @@ public class WebSurfConstants {
 
 	public static final boolean THREAD_SLEEP_ENABLED = true;
 
-	public static final long THREAD_SLEEP_DELAY = TimeUnit.MINUTES.toMillis(2);
+	public static final long THREAD_SLEEP_DELAY = TimeUnit.MINUTES.toMillis(1);
 
 	public static final int RETRY_COUNT = 5;
 
@@ -112,6 +113,6 @@ public class WebSurfConstants {
 		
 		public static final String  REVIEW_DATA_QUERY = PropertiesProvider.getInstance().getProperties(WebSurfConstants.SQL_QUERY_FILE).getProperty(REVIEW_DATA);
 		
-		public static final String[] REVIEW_DATA_NAMES = {"INFRASTRUCTURE","PLACEMENT","INDUSTRY_EXPOSURE","FACULTY","COLLEGE_LIFE","HOSTEL_LIFE","SOCIAL","RECOMMENDATIONS"};
+		public static final String[] REVIEW_DATA_NAMES = {"REVIEWER_RATING","TOTAL_REVIEWER","INFRASTRUCTURE","PLACEMENT","INDUSTRY_EXPOSURE","FACULTY","COLLEGE_LIFE","HOSTEL_LIFE","SOCIAL","RECOMMENDATIONS","ACCOMMODATION","ACADEMIC"};
 	}
 }

@@ -37,7 +37,9 @@ public class LoadDataToDumpHandler extends WebScrapHandler{
 		createTables();
 		LOGGER.info("Reading CSV files from College_list Folder..");
 		LOGGER.info("Reading CSV files from C360 Folder..");
-		fetchCSVFilesFromFolder(new File(WebSurfConstants.OUTPUT_FOLDER.concat("CollegesReview_c360")), 1);		
+		fetchCSVFilesFromFolder(new File(WebSurfConstants.OUTPUT_FOLDER.concat("CollegesReview_c360")), 1);	
+		LOGGER.info("Reading CSV files from CDunia Folder..");
+		fetchCSVFilesFromFolder(new File(WebSurfConstants.OUTPUT_FOLDER.concat("CollegesReview_collegeDuniya")), 2);
 	}
 
 	private void createTables() {
@@ -154,7 +156,10 @@ public class LoadDataToDumpHandler extends WebScrapHandler{
 						if(!collegeListDataSchemaMap.containsKey("COLLEGE_ID")) {
 							collegeListDataSchemaMap.put("COLLEGE_ID", getCollegeIdFromName(collegeListDataSchemaMap.get("COLLEGE_NAME")));
 						}
-						insertIntoReviewList(collegeListDataSchemaMap);
+						String reviewID = getReviewId(collegeListDataSchemaMap.get("COLLEGE_ID"), collegeListDataSchemaMap.get("REVIEW_IN_SOURCE_ID"));
+						if(Util.isNull(reviewID) || Util.isEmpty(reviewID)){
+							insertIntoReviewList(collegeListDataSchemaMap);
+						}
 						if(!collegeListDataSchemaMap.containsKey("REVIEW_TO_ID")) {
 							collegeListDataSchemaMap.put("REVIEW_TO_ID", getReviewId(collegeListDataSchemaMap.get("COLLEGE_ID"), collegeListDataSchemaMap.get("REVIEW_IN_SOURCE_ID")));
 						}
