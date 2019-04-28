@@ -29,9 +29,9 @@ public class InstaConstants {
 
 	public static final String DEFAULT_IG_CONNECTION = "DEFAULT";
 	
-	public static final String DEFAULT_MESSAGE = "Thank You for following Scholarhaunt, \n \t We are happy to help you in any knowledgeable way. help us to reach more. \nDM : @scholarhaunt";
+	public static final String DEFAULT_MESSAGE = PropertiesProvider.getInstance().getProperties(InstaConstants.CONFIGURATION_FILE).getProperty("DEFAULT_MESSAGE");
 	
-	public static final String DEFAULT_COMMENT = "Awesome post, #keepItUp. Tag us (@scholarhaunt / #scholarhaunt) in your future post to reach more.";
+	public static final String DEFAULT_COMMENT = PropertiesProvider.getInstance().getProperties(InstaConstants.CONFIGURATION_FILE).getProperty("DEFAULT_COMMENT");
 	
 	public final static class AuthenticationConstant {
 		
