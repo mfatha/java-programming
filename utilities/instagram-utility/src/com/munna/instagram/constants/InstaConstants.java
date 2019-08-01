@@ -29,6 +29,10 @@ public class InstaConstants {
 
 	public static final String DEFAULT_IG_CONNECTION = "DEFAULT";
 	
+	public static final String STOP_UNFOLLOWING_USER = "STOP_UNFOLLOWING_USER";
+	
+	public static final String DAY_OF_THE_WEEK_TO_UNFOLLOW = "DAY_OF_THE_WEEK_TO_UNFOLLOW"; 
+	
 	public static final String DEFAULT_MESSAGE = PropertiesProvider.getInstance().getProperties(InstaConstants.CONFIGURATION_FILE).getProperty("DEFAULT_MESSAGE");
 	
 	public static final String DEFAULT_COMMENT = PropertiesProvider.getInstance().getProperties(InstaConstants.CONFIGURATION_FILE).getProperty("DEFAULT_COMMENT");
@@ -62,6 +66,10 @@ public class InstaConstants {
 		public static final String HASH_TAGS = PropertiesProvider.getInstance().getProperties(InstaConstants.CONFIGURATION_FILE).getProperty(HASHTAG);
 		
 		public static final Long FIXED_COUNT = Long.parseLong(PropertiesProvider.getInstance().getProperties(InstaConstants.CONFIGURATION_FILE).getProperty(FIXEDCOUNT).trim());
+		
+		public static final Boolean IS_STOP_UNFOLLOWING_USER = Boolean.parseBoolean(PropertiesProvider.getInstance().getProperties(InstaConstants.CONFIGURATION_FILE).getProperty(STOP_UNFOLLOWING_USER));
+		
+		public static final Integer DAY_OF_THE_WEEK = Integer.parseInt((PropertiesProvider.getInstance().getProperties(InstaConstants.CONFIGURATION_FILE).getProperty(DAY_OF_THE_WEEK_TO_UNFOLLOW).trim()));
 	}
 
 }

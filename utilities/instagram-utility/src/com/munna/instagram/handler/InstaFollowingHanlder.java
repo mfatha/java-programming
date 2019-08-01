@@ -31,7 +31,8 @@ public class InstaFollowingHanlder extends InstagramHandler{
 	private static final Logger LOGGER = LoggerFactory.getLogger(InstaFollowingHanlder.class);
 	
 	String IgUsername = InstaConstants.AuthenticationConstant.IG_USERNAME;
-	Boolean isFollowingEmpty = false;
+	Boolean isFollowingEmpty = InstaConstants.FollowingConstants.IS_STOP_UNFOLLOWING_USER;
+	Integer dayOftheWeek = InstaConstants.FollowingConstants.DAY_OF_THE_WEEK;
 	
 	@Override
 	public void init() {
@@ -42,7 +43,7 @@ public class InstaFollowingHanlder extends InstagramHandler{
 		        LOGGER.info("Its "+ simpleDateformat.format(now));
 		        Calendar calendar = Calendar.getInstance();
 		        calendar.setTime(now);
-		        if(calendar.get(Calendar.DAY_OF_WEEK) == 5 && !isFollowingEmpty) {
+		        if(calendar.get(Calendar.DAY_OF_WEEK) == dayOftheWeek && !isFollowingEmpty) {
 		        	unFollowTheFollowingUsers();
 		        } else {
 		        	searchForNewUsersAndFollowThem();
