@@ -8,7 +8,7 @@
 
 	<properties>
 		<log4j.version>2.11.0</log4j.version>
-		<jsoup.version>1.8.3</jsoup.version>
+		<jsoup.version>1.14.2</jsoup.version>
 	</properties>
 
 	<dependencies>
