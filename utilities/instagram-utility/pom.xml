@@ -7,7 +7,7 @@
 
 	<properties>
 		<jfx.version>1.5</jfx.version>
-		<jsoup.version>1.8.3</jsoup.version>
+		<jsoup.version>1.15.3</jsoup.version>
 		<apache.client.version>4.3.6</apache.client.version>
 	</properties>
 	
